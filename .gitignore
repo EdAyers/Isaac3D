@@ -1,0 +1,9 @@
+Library/ShaderCache/
+Library/
+Assets/Standard Assets/
+Temp/StagingArea/assets/bin/Data/Resources/unity_builtin_extra
+Temp/
+HelloUnityStandalone_Data/
+obj/
+android_build.apk
+*.meta
