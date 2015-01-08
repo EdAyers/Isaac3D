@@ -14,8 +14,7 @@ public class VolumeRenderComponent : MonoBehaviour {
   //private int volumeDepth = 256;
 
   ///the range over which to evaluate the scalar field
-  [SerializeField]
-  private float fieldSize = 10.0F;
+  private float fieldSize = 4.0F;
   //[SerializeField]
   //private float fieldHeight = 10.0F;
   //[SerializeField]
@@ -33,6 +32,8 @@ public class VolumeRenderComponent : MonoBehaviour {
 
   private Material volumeShaderMaterial;
 
+  private HydrogenCalc hydrogen;
+
   void Reset()
   {
 
@@ -40,6 +41,9 @@ public class VolumeRenderComponent : MonoBehaviour {
 
   void Awake()
   {
+    hydrogen = new HydrogenCalc(1, 0, 0);
+
+    
     volumeShaderMaterial = new Material(volumeShader);
     
     var MR = this.gameObject.AddComponent<MeshRenderer>();
@@ -67,6 +71,7 @@ public class VolumeRenderComponent : MonoBehaviour {
     return Mathf.Sin(x + y + z);
   }
 
+
   void GenerateSphereTextures()
   {
     //for now just make them be their position
@@ -80,8 +85,9 @@ public class VolumeRenderComponent : MonoBehaviour {
       for (int j = 0; j < w; j++)
       {
         int index = i + (j * h);
-        float r = (i < 40 && i > 30 && j < 40 && j > 30) ? 1f : 0f;
-        sph_colors[index] = new Color( ScalarField(0.5f * i, 0.5f * j,0f),0f,0f , 0f );
+        float theta = (float)i / h * Mathf.PI;
+        float phi = (float)j / w * 2 * Mathf.PI;
+        sph_colors[index] = hydrogen.SphericalHarmonic(theta, phi);
       }
     }
     sphericalBuffer.SetPixels(sph_colors);
@@ -92,7 +98,8 @@ public class VolumeRenderComponent : MonoBehaviour {
     var r_colors = new Color[d];
     for (int i = 0; i < d; i++)
     {
-      r_colors[i] = new Color((i > 10 ) ? 1f : 0f, 0, 0);
+      float r = i * fieldSize / d;
+      r_colors[i] = hydrogen.RadialComponent(r);
     }
     radialBuffer.SetPixels(r_colors);
     radialBuffer.Apply();

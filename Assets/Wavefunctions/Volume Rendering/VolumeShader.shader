@@ -97,14 +97,17 @@
           float4 sample_r = tex2D(radial_tex, float2(rtp.x / sphereRadius, 0));
           float4 sample_y = tex2D(sphere_tex, float2(rtp.y, rtp.z));
           sample_mag = sample_r.x * sample_y.x; //assume always less than one
-          sample_arg = fmod(sample_r.y + sample_y.y, 6.28); 
+          sample_arg = fmod(sample_r.y + sample_y.y, 1.0) * 6.28; 
+          float r = cos(sample_arg)/2 + 1;
+          float g = cos(sample_arg - (6.28 / 3))/2 + 1;
+          float b = cos(sample_arg - 2 * (6.28)/ 3)/2 + 1;
           
-          color_sample = float4(0.8,0.8,1,sample_mag);
+          color_sample = float4(r,g,b,1) * clamp(sample_mag * 3,0,1);
           alpha_sample = color_sample.a * stepsize;
           
-          col_acc   += (1.0 - alpha_acc) * color_sample * alpha_sample * 3;
+          col_acc   += (1.0 - alpha_acc) * color_sample * alpha_sample * 5;
 
-          alpha_acc += alpha_sample;
+          alpha_acc += alpha_sample * 2;
 
           length_acc += delta;
           vec += delta_dir;
@@ -122,7 +125,7 @@
     sphere_tex ("Spherical Texture", 2D) = "blue" {} //encodes the R channel as |z| and G as arg(z)
     radial_tex ("Radial Texture", 2D) = "blue" {}
     //render_sphere ("Render Spherical Textures", int) = 0
-    sphereRadius ("Radius of Volume to be rendered", Float) = 0.55
+    sphereRadius ("Radius of Volume to be rendered", Float) = 0.45
     stepsize ("Step Size", Float) = 0.05
 	}
 	SubShader {
