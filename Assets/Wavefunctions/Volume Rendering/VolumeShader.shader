@@ -5,7 +5,8 @@
 
     //copied from http://www.daimi.au.dk/~trier/raycasting_shader.cg
 
-    float sphereRadius; //gives the radius in space to render the volume
+    float renderRadius; //gives the radius in space to render the volume
+    float fieldRadius;
     sampler2D sphere_tex;
     sampler2D radial_tex;
     float stepsize;
@@ -49,12 +50,12 @@
       //we can find the point where the ray starting at x in direction d first
       //intersects our sphere of interest
       float b = dot(d,x);
-      float c = dot(x,x) - (sphereRadius * sphereRadius);
+      float c = dot(x,x) - (renderRadius * renderRadius);
       float p = (b*b) - c;
       float4 result;
       if (p <= 0)
       {
-        result = float4(110,0,0,0);
+        result = float4(2000,0,0,0); //HACK should return some kind of null value.
       }
       else
       {
@@ -76,7 +77,7 @@
       //in range [-a to +a]
       float3 start = get_sphere_entry(IN.EntryPoint, IN.Dir); 
 
-      float delta = stepsize * sphereRadius;
+      float delta = stepsize * renderRadius;
       float3 delta_dir = IN.Dir * delta;
       float3 vec = start;
       float4 col_acc = float4(0,0,0,0);
@@ -93,8 +94,8 @@
            
           //spherical textures
           rtp = xyz_to_rtp(vec);
-          if (alpha_acc > 1.0 || rtp.x > sphereRadius ) break;
-          float4 sample_r = tex2D(radial_tex, float2(rtp.x / sphereRadius, 0));
+          if (alpha_acc > 1.0 || rtp.x > renderRadius ) break;
+          float4 sample_r = tex2D(radial_tex, float2(rtp.x * fieldRadius / renderRadius, 0));
           float4 sample_y = tex2D(sphere_tex, float2(rtp.y, rtp.z));
           sample_mag = sample_r.x * sample_y.x; //assume always less than one
           sample_arg = fmod(sample_r.y + sample_y.y, 1.0) * 6.28; 
@@ -124,8 +125,8 @@
     //volume_tex ("Volume Texture", 3D) = "" {}
     sphere_tex ("Spherical Texture", 2D) = "blue" {} //encodes the R channel as |z| and G as arg(z)
     radial_tex ("Radial Texture", 2D) = "blue" {}
-    //render_sphere ("Render Spherical Textures", int) = 0
-    sphereRadius ("Radius of Volume to be rendered", Float) = 0.45
+    renderRadius ("Radius of rendering volume", Float) = 0.45
+    fieldRadius ("Radius of the field", Float) = 1.0
     stepsize ("Step Size", Float) = 0.05
 	}
 	SubShader {

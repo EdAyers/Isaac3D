@@ -41,7 +41,7 @@ public class VolumeRenderComponent : MonoBehaviour {
 
   void Awake()
   {
-    hydrogen = new HydrogenCalc(1, 0, 0);
+    hydrogen = new HydrogenCalc(2, 0, 0);
 
     
     volumeShaderMaterial = new Material(volumeShader);
@@ -87,7 +87,8 @@ public class VolumeRenderComponent : MonoBehaviour {
         int index = i + (j * h);
         float theta = (float)i / h * Mathf.PI;
         float phi = (float)j / w * 2 * Mathf.PI;
-        sph_colors[index] = hydrogen.SphericalHarmonic(theta, phi);
+        Complex x = hydrogen.SphericalHarmonic(theta, phi);
+        sph_colors[index] = new Color(x.mag, x.arg / Mathf.PI / 2, 0, 1) ;
       }
     }
     sphericalBuffer.SetPixels(sph_colors);
@@ -99,7 +100,8 @@ public class VolumeRenderComponent : MonoBehaviour {
     for (int i = 0; i < d; i++)
     {
       float r = i * fieldSize / d;
-      r_colors[i] = hydrogen.RadialComponent(r);
+      Complex x = Complex.FromRI(hydrogen.RadialComponent(r), 0f);
+      r_colors[i] = new Color(x.mag, x.arg / Mathf.PI / 2, 0,1);
     }
     radialBuffer.SetPixels(r_colors);
     radialBuffer.Apply();

@@ -3,6 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+
+struct Complex
+{
+  public float mag;
+  public float arg;
+
+  static public Complex FromRI(float r, float i)
+  {
+    return new Complex() 
+    { 
+      mag = Mathf.Sqrt(r * r + i * i),
+      arg = Mathf.Atan2(i, r) 
+    };
+  }
+}
+
   class HydrogenCalc
   {
     int n;
@@ -10,7 +26,7 @@ using UnityEngine;
     int m;
 
     float harmonicFactor;
-    float radialFactor;
+    float hydrogenFactor;
 
     public HydrogenCalc(int n, int l, int m)
     {
@@ -62,10 +78,34 @@ using UnityEngine;
       }
 
       //TODO calculate radial factor
-      //if (n == )
+      int lagN = n - l - 1;
+      if (lagN == 0) laguerrePol = L0;
+      else if (lagN == 1) laguerrePol = L1;
+      else if (lagN == 2) laguerrePol = L2;
+      else if (lagN == 3) laguerrePol = L3;
+      else
+      {
+        throw new ArgumentException("Laguerre Polynomials not implemented for n - l - 1 = " + lagN.ToString());
+      }
+
+      f = Mathf.Pow(2 / n, 3) / (2 * n);
+
+      for (int i = n - l; i <= n + l; i++)
+      {
+        f /= i;
+      }
+      hydrogenFactor = Mathf.Sqrt(f);
+
     }
 
-    public Color SphericalHarmonic(float theta, float phi)
+    /// <summary>
+    /// Returns a spherical harmonic function for a point on the unit sphere based on the n,m,l parameters
+    /// and theta and phi
+    /// </summary>
+    /// <param name="theta">angle the point makes with the z axis</param>
+    /// <param name="phi">angle the point projected into the xy plane makes with the x axis</param>
+    /// <returns>A complex number representing the value of the harmonic on the specified point on a unit sphere</returns>
+    public Complex SphericalHarmonic(float theta, float phi)
     {
       float f = harmonicFactor * legendrePol(Mathf.Cos(theta));
       float mag;
@@ -79,21 +119,31 @@ using UnityEngine;
       {
         mag = f;
       }
-      arg /= (2 * Mathf.PI);
-      arg = arg % 1.0f;
+      arg = arg % (2 * Mathf.PI);
 
-      return new Color(mag, arg, 0, 1);
+      return new Complex() {mag = mag, arg = arg};
     }
 
-    public Color RadialComponent(float r)
+    public float RadialComponent(float r)
     {
-      //HACK
-      return new Color( Mathf.Exp(-r / n),0,0,1);
+      float part1 = Mathf.Exp(-r / 2 / n);
+      float part2 = Mathf.Pow(r / n, l);
+      float part3 = laguerrePol(r / n, 2 * l + 1);
+
+      return part1 * part2 * part3 * hydrogenFactor;
+    }
+
+    public Complex Wavefunction(float r, float theta, float phi)
+    {
+      Complex sph = SphericalHarmonic(theta, phi);
+      float mag = sph.mag * RadialComponent(r);
+      return new Complex() {mag = mag, arg = sph.arg};
     }
 
     delegate float Polynomial(float x);
+    delegate float LagPoly(float x, int k);
     Polynomial legendrePol;
-    Polynomial laguerrePol;
+    LagPoly laguerrePol;
 
     //For now we'll just hard-code the first few legendre polynomials 
     float P00(float x) { return 1f; }
@@ -114,8 +164,8 @@ using UnityEngine;
     float P05(float x) { return 0.125f * x * (63 * Mathf.Pow(x, 4) - 70 * x * x + 15); }
 
     //Hard-coded Larguerre polynomials
-    float L0(float x) { return 1f; }
-    float L1(float x) { return 1 - x; }
-    float L2(float x) { return 0.5f * (x*x - 4*x + 2); }
-    float L3(float x) { return 1/6f * (- x * x * x + 9 * x * x - 18 * x + 6); }
+    float L0(float x, int k) { return 1f; }
+    float L1(float x, int k) { return 1 - x + k; }
+    float L2(float x, int k) { return 0.5f * (x*x - 2*(k+1)*x + (k+1)*(k+2)); }
+    float L3(float x, int k) { return 1/6f * (- x * x * x + 3 * (k+3) * x * x - 3 *(k+2) * (k+3) * x + (k+3)*(k+2)*(k+1)); }
   }
