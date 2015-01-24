@@ -14,7 +14,7 @@ public class VolumeRenderComponent : MonoBehaviour {
   //private int volumeDepth = 256;
 
   ///the range over which to evaluate the scalar field
-  private float fieldSize = 4.0F;
+  private float fieldSize = 15.0F;
   //[SerializeField]
   //private float fieldHeight = 10.0F;
   //[SerializeField]
@@ -41,7 +41,7 @@ public class VolumeRenderComponent : MonoBehaviour {
 
   void Awake()
   {
-    hydrogen = new HydrogenCalc(2, 0, 0);
+    hydrogen = new HydrogenCalc(2, 1, 0);
 
     
     volumeShaderMaterial = new Material(volumeShader);
@@ -50,6 +50,8 @@ public class VolumeRenderComponent : MonoBehaviour {
     MR.material = volumeShaderMaterial;
 
     GenerateSphereTextures();
+    sphericalBuffer.filterMode = FilterMode.Point;
+    radialBuffer.filterMode = FilterMode.Point;
     volumeShaderMaterial.SetTexture("sphere_tex", sphericalBuffer);
     volumeShaderMaterial.SetTexture("radial_tex", radialBuffer);
 
@@ -101,7 +103,7 @@ public class VolumeRenderComponent : MonoBehaviour {
     {
       float r = i * fieldSize / d;
       Complex x = Complex.FromRI(hydrogen.RadialComponent(r), 0f);
-      r_colors[i] = new Color(x.mag, x.arg / Mathf.PI / 2, 0,1);
+      r_colors[i] = new Color(x.mag * 10, x.arg / Mathf.PI / 2, 0,1);
     }
     radialBuffer.SetPixels(r_colors);
     radialBuffer.Apply();

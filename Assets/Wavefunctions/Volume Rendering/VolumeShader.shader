@@ -41,7 +41,9 @@
     float3 xyz_to_rtp(float3 xyz)
     {
       float l = length(float3(xyz.x, xyz.y, 0));
-      return float3(length(xyz), atan2(l, xyz.z)/3.14, atan2(xyz.y, xyz.x)/6.28 + 0.5);
+      float phi;
+      phi = atan2(xyz.y, xyz.x);
+      return float3(length(xyz), atan2(l, xyz.z)/3.14, phi/6.28318530718 + 0.5);
     }
 
     float4 get_sphere_entry(float3 x, float3 d)
@@ -89,15 +91,14 @@
       float4 color_sample;
       float alpha_sample;
       float3 rtp;
-      for(int i = 0; i < 30; i++)
+      for(int i = 0; i < 20; i++)
       {
-           
           //spherical textures
           rtp = xyz_to_rtp(vec);
           if (alpha_acc > 1.0 || rtp.x > renderRadius ) break;
           float4 sample_r = tex2D(radial_tex, float2(rtp.x * fieldRadius / renderRadius, 0));
-          float4 sample_y = tex2D(sphere_tex, float2(rtp.y, rtp.z));
-          sample_mag = sample_r.x * sample_y.x; //assume always less than one
+          float4 sample_y = tex2D(sphere_tex, float2(rtp.y, rtp.z), 0,0);
+          sample_mag = sample_r.x * sample_y.x; //HACK assume always less than one :p
           sample_arg = fmod(sample_r.y + sample_y.y, 1.0) * 6.28; 
           float r = cos(sample_arg)/2 + 1;
           float g = cos(sample_arg - (6.28 / 3))/2 + 1;
@@ -106,9 +107,9 @@
           color_sample = float4(r,g,b,1) * clamp(sample_mag * 3,0,1);
           alpha_sample = color_sample.a * stepsize;
           
-          col_acc   += (1.0 - alpha_acc) * color_sample * alpha_sample * 5;
+          col_acc   += (1.0 - alpha_acc) * color_sample * alpha_sample * 3;
 
-          alpha_acc += alpha_sample * 2;
+          alpha_acc += alpha_sample;
 
           length_acc += delta;
           vec += delta_dir;
@@ -127,7 +128,7 @@
     radial_tex ("Radial Texture", 2D) = "blue" {}
     renderRadius ("Radius of rendering volume", Float) = 0.45
     fieldRadius ("Radius of the field", Float) = 1.0
-    stepsize ("Step Size", Float) = 0.05
+    stepsize ("Step Size", Float) = 0.075
 	}
 	SubShader {
     Tags {"Queue" = "Transparent" }
