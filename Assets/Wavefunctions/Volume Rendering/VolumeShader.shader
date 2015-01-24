@@ -41,9 +41,8 @@
     float3 xyz_to_rtp(float3 xyz)
     {
       float l = length(float3(xyz.x, xyz.y, 0));
-      float phi;
-      phi = atan2(xyz.y, xyz.x);
-      return float3(length(xyz), atan2(l, xyz.z)/3.14, phi/6.28318530718 + 0.5);
+      float phi = atan2(xyz.y, xyz.x)/6.28318530718 + 0.5;
+      return float3(length(xyz), atan2(l, xyz.z)/3.14, phi);
     }
 
     float4 get_sphere_entry(float3 x, float3 d)
@@ -96,8 +95,9 @@
           //spherical textures
           rtp = xyz_to_rtp(vec);
           if (alpha_acc > 1.0 || rtp.x > renderRadius ) break;
+          
           float4 sample_r = tex2D(radial_tex, float2(rtp.x * fieldRadius / renderRadius, 0));
-          float4 sample_y = tex2D(sphere_tex, float2(rtp.y, rtp.z), 0,0);
+          float4 sample_y = tex2D(sphere_tex, float2(rtp.y, rtp.z));
           sample_mag = sample_r.x * sample_y.x; //HACK assume always less than one :p
           sample_arg = fmod(sample_r.y + sample_y.y, 1.0) * 6.28; 
           float r = cos(sample_arg)/2 + 1;

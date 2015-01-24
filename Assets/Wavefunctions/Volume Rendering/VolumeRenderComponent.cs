@@ -15,6 +15,7 @@ public class VolumeRenderComponent : MonoBehaviour {
 
   ///the range over which to evaluate the scalar field
   private float fieldSize = 15.0F;
+  private float magBoost = 15F;
   //[SerializeField]
   //private float fieldHeight = 10.0F;
   //[SerializeField]
@@ -34,6 +35,8 @@ public class VolumeRenderComponent : MonoBehaviour {
 
   private HydrogenCalc hydrogen;
 
+  private Cardboard cardboardMain;
+
   void Reset()
   {
 
@@ -41,7 +44,7 @@ public class VolumeRenderComponent : MonoBehaviour {
 
   void Awake()
   {
-    hydrogen = new HydrogenCalc(2, 1, 0);
+    hydrogen = new HydrogenCalc(3, 1, 1);
 
     
     volumeShaderMaterial = new Material(volumeShader);
@@ -50,22 +53,42 @@ public class VolumeRenderComponent : MonoBehaviour {
     MR.material = volumeShaderMaterial;
 
     GenerateSphereTextures();
-    sphericalBuffer.filterMode = FilterMode.Point;
-    radialBuffer.filterMode = FilterMode.Point;
     volumeShaderMaterial.SetTexture("sphere_tex", sphericalBuffer);
     volumeShaderMaterial.SetTexture("radial_tex", radialBuffer);
 
     //GenerateVolumeTexture();
     //volumeShaderMaterial.SetTexture("volume_tex", volumeBuffer);
+
+    cardboardMain = GetComponentInChildren(typeof(Cardboard)) as Cardboard;
+    Debug.Log("cardboardMain = " + cardboardMain);
   }
 
 	// Use this for initialization
 	void Start () {
 	}
 
+
+  HydrogenCalc[] calcs =
+  {
+    new HydrogenCalc(3,0,0),
+    new HydrogenCalc(3,1,0),
+    new HydrogenCalc(3,1,1),
+    new HydrogenCalc(3,2,0),
+    new HydrogenCalc(3,2,1),
+    new HydrogenCalc(3,2,2)
+  };
+  int calcIndex = 0;
 	// Update is called once per frame
 	void Update () {
-
+    if (cardboardMain.CardboardTriggered)
+    {
+      Debug.Log("button pressed");
+      hydrogen = calcs[calcIndex];
+      GenerateSphereTextures();
+      volumeShaderMaterial.SetTexture("sphere_tex", sphericalBuffer);
+      volumeShaderMaterial.SetTexture("radial_tex", radialBuffer);
+      calcIndex++;
+    }
 	}
 
   float ScalarField(float x, float y, float z)
@@ -103,10 +126,13 @@ public class VolumeRenderComponent : MonoBehaviour {
     {
       float r = i * fieldSize / d;
       Complex x = Complex.FromRI(hydrogen.RadialComponent(r), 0f);
-      r_colors[i] = new Color(x.mag * 10, x.arg / Mathf.PI / 2, 0,1);
+      r_colors[i] = new Color(x.mag * magBoost, x.arg / Mathf.PI / 2, 0,1);
     }
     radialBuffer.SetPixels(r_colors);
     radialBuffer.Apply();
+    sphericalBuffer.filterMode = FilterMode.Point;
+    radialBuffer.filterMode = FilterMode.Point;
+
   }
 
   void GenerateVolumeTexture()
