@@ -88,6 +88,7 @@ public class VolumeRenderComponent : MonoBehaviour {
       volumeShaderMaterial.SetTexture("sphere_tex", sphericalBuffer);
       volumeShaderMaterial.SetTexture("radial_tex", radialBuffer);
       calcIndex++;
+      if (calcIndex >= calcs.Length) calcIndex = 0;
     }
 	}
 
