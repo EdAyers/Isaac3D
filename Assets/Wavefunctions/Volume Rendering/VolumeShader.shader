@@ -88,7 +88,7 @@
       float4 color_sample;
       float alpha_sample;
       float3 rtp;
-      for(int i = 0; i < 20; i++)
+      for(int i = 0; i < 40; i++)
       {
           //spherical textures
           rtp = xyz_to_rtp(vec);
@@ -114,7 +114,7 @@
             color_sample = float4(r,0,b,1);
           }
 
-          alpha_sample = color_sample.a * stepsize;
+          alpha_sample = color_sample.a * stepsize / 4;
           
           col_acc   += (1.0 - alpha_acc) * color_sample * alpha_sample * 3;
 

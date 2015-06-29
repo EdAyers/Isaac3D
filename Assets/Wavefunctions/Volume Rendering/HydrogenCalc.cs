@@ -28,8 +28,15 @@ struct Complex
     float harmonicFactor;
     float hydrogenFactor;
 
-    public int AngularNodes { get { return Math.Abs(m); } }
+    public double Size
+    {
+      get
+      {
+        return Math.Pow(2,n) * 3;
+      }
+    }
 
+    public int AngularNodes { get { return Math.Abs(m); } }
 
     public HydrogenCalc(int n, int l, int m)
     {
@@ -104,13 +111,6 @@ struct Complex
       Debug.Log("hydrogenFactor = " + hydrogenFactor);
     }
 
-    /// <summary>
-    /// Returns a spherical harmonic function for a point on the unit sphere based on the n,m,l parameters
-    /// and theta and phi
-    /// </summary>
-    /// <param name="theta">angle the point makes with the z axis</param>
-    /// <param name="phi">angle the point projected into the xy plane makes with the x axis</param>
-    /// <returns>A complex number representing the value of the harmonic on the specified point on a unit sphere</returns>
     public float SphericalHarmonic(float theta)
     {
       float f = harmonicFactor * legendrePol(Mathf.Cos(theta));
@@ -129,11 +129,12 @@ struct Complex
       return result;
     }
 
-    public float Wavefunction(float r, float theta, float phi)
+    public Complex Wavefunction(float r, float theta, float phi)
     {
       float mag_Y = SphericalHarmonic(theta);
       float mag = mag_Y * RadialComponent(r);
-      return mag;
+      float phase = phi * m;
+      return Complex.FromRI(mag, phase);
     }
 
     delegate float Polynomial(float x);
@@ -141,7 +142,7 @@ struct Complex
     Polynomial legendrePol;
     LagPoly laguerrePol;
 
-    //For now we'll just hard-code the first few legendre polynomials 
+    //For now just hard-code the first few legendre polynomials 
     float P00(float x) { return 1f; }
     float P01(float x) { return x; }
     float P11(float x) { return - Mathf.Sqrt(1 - x * x); }

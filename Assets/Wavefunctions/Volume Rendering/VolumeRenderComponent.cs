@@ -18,6 +18,17 @@ public class VolumeRenderComponent : MonoBehaviour {
   private float fieldMaxValue = 1.0F;
   private float fieldMinValue = -1.0F;
 
+  HydrogenCalc[] calcs =
+  {
+    new HydrogenCalc(3,0,0),
+    new HydrogenCalc(3,1,0),
+    new HydrogenCalc(3,1,1),
+    new HydrogenCalc(3,2,0),
+    new HydrogenCalc(3,2,1),
+    new HydrogenCalc(3,2,2)
+  };
+  int calcIndex = 0;
+
   private Texture2D fieldData;
 
   private Material volumeShaderMaterial;
@@ -54,17 +65,6 @@ public class VolumeRenderComponent : MonoBehaviour {
 	void Start () {
 	}
 
-  HydrogenCalc[] calcs =
-  {
-    new HydrogenCalc(3,0,0),
-    new HydrogenCalc(3,1,0),
-    new HydrogenCalc(3,1,1),
-    new HydrogenCalc(3,2,0),
-    new HydrogenCalc(3,2,1),
-    new HydrogenCalc(3,2,2)
-  };
-  int calcIndex = 0;
-
 	// Update is called once per frame
 	void Update () {
     if (cardboardMain.CardboardTriggered)
@@ -86,7 +86,7 @@ public class VolumeRenderComponent : MonoBehaviour {
 
   void GenerateSphereTextures()
   {
-    //for now just make them be their position
+    fieldSize = (float)hydrogen.Size;
     var h = volumeTextureSize;
     var w = volumeTextureSize;
     fieldData = new Texture2D(h, w);
