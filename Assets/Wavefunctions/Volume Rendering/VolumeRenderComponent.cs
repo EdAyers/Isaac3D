@@ -20,13 +20,11 @@ public class VolumeRenderComponent : MonoBehaviour {
 
   HydrogenCalc[] calcs =
   {
-    //new HydrogenCalc(3,0,0),
     new HydrogenCalc(3,1,0),
-    new HydrogenCalc(3,1,1),
+    //new HydrogenCalc(3,1,1),
     new HydrogenCalc(3,2,0),
     new HydrogenCalc(3,2,1),
-    new HydrogenCalc(3,2,2),
-    //new HydrogenCalc(4,2,2)
+    new HydrogenCalc(3,2,2)
   };
   int calcIndex = 0;
 
@@ -106,7 +104,7 @@ public class VolumeRenderComponent : MonoBehaviour {
         float red = mag > 0 ? mag : 0.0f;
         float blue = mag < 0 ? -mag : 0.0f;
         //TODO normalise mag for visualisation rather than chemical accuracy
-        sph_colors[index] = new Color(red, 0, blue, 1) ;
+        sph_colors[index] = new Color(red, 0, blue, mag) ;
       }
     }
     Debug.Log(mag);

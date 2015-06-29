@@ -11,6 +11,9 @@
     float stepsize;
     int angularNodes;
 
+    float alphaFactor;
+    float colorFactor;
+
     // Define the interface between the vertex- and the fragment programs
     struct vertex_fragment
     {
@@ -114,10 +117,9 @@
             color_sample = float4(r,0,b,1);
           }
 
-          alpha_sample = color_sample.a * stepsize / 4;
+          alpha_sample = color_sample.a * stepsize * alphaFactor;
           
-          //col_acc   += (1.0 - alpha_acc) * color_sample * alpha_sample * 3;
-          col_acc   += color_sample * 0.1;
+          col_acc += (1.0 - alpha_acc) * color_sample * colorFactor;
 
           alpha_acc += alpha_sample;
 
@@ -133,12 +135,14 @@
   ENDCG
 
 	Properties {
-    //volume_tex ("Volume Texture", 3D) = "" {}
     fieldData ("Texture containing data about field", 2D) = "green" {} //encodes the R channel as |z| and G as arg(z)
     renderRadius ("Radius of rendering volume", Float) = 0.45
     fieldRadius ("Radius of the field", Float) = 0.5
     stepsize ("Step Size", Float) = 0.075
     angularNodes ("abs(m) quantum number", Int) = 1
+
+    alphaFactor ("alpha factor", Float) = 0.3
+    colorFactor ("color factor", Float) = 0.15
 	}
 	SubShader {
     Tags {"Queue" = "Transparent" }
