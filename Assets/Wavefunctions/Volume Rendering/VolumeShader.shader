@@ -7,16 +7,16 @@
 
     float renderRadius; //gives the radius in space to render the volume
     float fieldRadius;
-    sampler2D sphere_tex;
-    sampler2D radial_tex;
+    sampler2D fieldData; //stores a texture; encoded as the red component being the magnitude
     float stepsize;
+    int angularNodes;
 
     // Define the interface between the vertex- and the fragment programs
     struct vertex_fragment
     {
-       float4 ProjPos	  : POSITION; // For the rasterizer
-       float3 Dir       : TEXCOORD0; //Gives the direction of the ray into the cube in the model's coordinate system
-       float3 EntryPoint       : TEXCOORD1; //gives the model position of the vertex
+       float4 ProjPos	    : POSITION; // For the rasterizer
+       float3 Dir         : TEXCOORD0; //Gives the direction of the ray into the cube in the model's coordinate system
+       float3 EntryPoint  : TEXCOORD1; //gives the model position of the vertex
     };
 
     struct fragment_out 
@@ -71,8 +71,6 @@
     // Raycasting fragment program implementation
     fragment_out fragment_main( vertex_fragment IN )
     {
-      
-
       fragment_out OUT;
       
       //in range [-a to +a]
@@ -96,15 +94,26 @@
           rtp = xyz_to_rtp(vec);
           if (alpha_acc > 1.0 || rtp.x > renderRadius ) break;
           
-          float4 sample_r = tex2D(radial_tex, float2(rtp.x * fieldRadius / renderRadius, 0));
-          float4 sample_y = tex2D(sphere_tex, float2(rtp.y, rtp.z));
-          sample_mag = sample_r.x * sample_y.x; //HACK assume always less than one :p
-          sample_arg = fmod(sample_r.y + sample_y.y, 1.0) * 6.28; 
-          float r = cos(sample_arg)/2 + 1;
-          float g = cos(sample_arg - (6.28 / 3))/2 + 1;
-          float b = cos(sample_arg - 2 * (6.28)/ 3)/2 + 1;
+          float texRadius = saturate(rtp.r /fieldRadius);
+          float4 sample_field = tex2D(fieldData, float2(texRadius, rtp.y));
+
+          sample_mag = sample_field.x;
+          float phiComp = cos(angularNodes * rtp.z * 6.283);
+          float apc = abs(phiComp);
           
-          color_sample = float4(r,g,b,1) * clamp(sample_mag * 3,0,1);
+          if (phiComp > 0)
+          {
+            float r = (sample_field.r) * apc; //positive part
+            float b = (sample_field.b) * apc; //negative part
+            color_sample = float4(r,0,b,1);
+          }
+          else
+          {
+            float b = (sample_field.r) * apc; //positive part
+            float r = (sample_field.b) * apc; //negative part
+            color_sample = float4(r,0,b,1);
+          }
+
           alpha_sample = color_sample.a * stepsize;
           
           col_acc   += (1.0 - alpha_acc) * color_sample * alpha_sample * 3;
@@ -124,11 +133,11 @@
 
 	Properties {
     //volume_tex ("Volume Texture", 3D) = "" {}
-    sphere_tex ("Spherical Texture", 2D) = "blue" {} //encodes the R channel as |z| and G as arg(z)
-    radial_tex ("Radial Texture", 2D) = "blue" {}
+    fieldData ("Texture containing data about field", 2D) = "green" {} //encodes the R channel as |z| and G as arg(z)
     renderRadius ("Radius of rendering volume", Float) = 0.45
     fieldRadius ("Radius of the field", Float) = 1.0
     stepsize ("Step Size", Float) = 0.075
+    angularNodes ("abs(m) quantum number", Int) = 1
 	}
 	SubShader {
     Tags {"Queue" = "Transparent" }

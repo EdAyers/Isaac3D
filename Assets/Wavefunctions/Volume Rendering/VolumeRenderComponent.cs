@@ -28,8 +28,7 @@ public class VolumeRenderComponent : MonoBehaviour {
   private float fieldMinValue = -1.0F;
 
   private Texture3D volumeBuffer;
-  private Texture2D sphericalBuffer;
-  private Texture2D radialBuffer;
+  private Texture2D fieldData;
 
   private Material volumeShaderMaterial;
 
@@ -52,12 +51,7 @@ public class VolumeRenderComponent : MonoBehaviour {
     var MR = this.gameObject.AddComponent<MeshRenderer>();
     MR.material = volumeShaderMaterial;
 
-    GenerateSphereTextures();
-    volumeShaderMaterial.SetTexture("sphere_tex", sphericalBuffer);
-    volumeShaderMaterial.SetTexture("radial_tex", radialBuffer);
-
-    //GenerateVolumeTexture();
-    //volumeShaderMaterial.SetTexture("volume_tex", volumeBuffer);
+    RefreshFieldData();
 
     cardboardMain = GetComponentInChildren(typeof(Cardboard)) as Cardboard;
     Debug.Log("cardboardMain = " + cardboardMain);
@@ -84,13 +78,18 @@ public class VolumeRenderComponent : MonoBehaviour {
     {
       Debug.Log("button pressed");
       hydrogen = calcs[calcIndex];
-      GenerateSphereTextures();
-      volumeShaderMaterial.SetTexture("sphere_tex", sphericalBuffer);
-      volumeShaderMaterial.SetTexture("radial_tex", radialBuffer);
+      RefreshFieldData();
       calcIndex++;
       if (calcIndex >= calcs.Length) calcIndex = 0;
     }
 	}
+
+  void RefreshFieldData()
+  {
+      GenerateSphereTextures();
+      volumeShaderMaterial.SetTexture("fieldData", fieldData);
+      volumeShaderMaterial.SetInt("angularNodes", hydrogen.AngularNodes);
+  }
 
   float ScalarField(float x, float y, float z)
   {
@@ -103,36 +102,41 @@ public class VolumeRenderComponent : MonoBehaviour {
     //for now just make them be their position
     var h = volumeTextureSize;
     var w = volumeTextureSize;
-    sphericalBuffer = new Texture2D(h, w);
+    fieldData = new Texture2D(h, w);
     var sph_colors = new Color[h * w];
-
+    float mag = 0;
+    var d = volumeTextureSize;
     for (int i = 0; i < h; i++)
     {
       for (int j = 0; j < w; j++)
       {
         int index = i + (j * h);
-        float theta = (float)i / h * Mathf.PI;
-        float phi = (float)j / w * 2 * Mathf.PI;
-        Complex x = hydrogen.SphericalHarmonic(theta, phi);
-        sph_colors[index] = new Color(x.mag, x.arg / Mathf.PI / 2, 0, 1) ;
+        float r = (float)i * fieldSize / d;
+        float theta = (float)j / h * Mathf.PI;
+        mag = hydrogen.RadialComponent(r) * hydrogen.SphericalHarmonic(theta);
+        mag *= 50;
+        float red = mag > 0 ? mag : 0.0f;
+        float blue = mag < 0 ? -mag : 0.0f;
+        //TODO normalise mag for visualisation rather than chemical accuracy
+        sph_colors[index] = new Color(red, 0, blue, 1) ;
       }
     }
-    sphericalBuffer.SetPixels(sph_colors);
-    sphericalBuffer.Apply();
+    Debug.Log(mag);
+    fieldData.filterMode = FilterMode.Point;
+    fieldData.SetPixels(sph_colors);
+    fieldData.Apply();
 
-    var d = volumeTextureSize;
-    radialBuffer = new Texture2D(d, 1);
-    var r_colors = new Color[d];
-    for (int i = 0; i < d; i++)
-    {
-      float r = i * fieldSize / d;
-      Complex x = Complex.FromRI(hydrogen.RadialComponent(r), 0f);
-      r_colors[i] = new Color(x.mag * magBoost, x.arg / Mathf.PI / 2, 0,1);
-    }
-    radialBuffer.SetPixels(r_colors);
-    radialBuffer.Apply();
-    sphericalBuffer.filterMode = FilterMode.Point;
-    radialBuffer.filterMode = FilterMode.Point;
+    //radialBuffer = new Texture2D(d, 1);
+    //var r_colors = new Color[d];
+    //for (int i = 0; i < d; i++)
+    //{
+    //  float r = i * fieldSize / d;
+    //  Complex x = Complex.FromRI(hydrogen.RadialComponent(r), 0f);
+    //  r_colors[i] = new Color(x.mag * magBoost, x.arg / Mathf.PI / 2, 0,1);
+    //}
+    //radialBuffer.SetPixels(r_colors);
+    //radialBuffer.Apply();
+    //radialBuffer.filterMode = FilterMode.Point;
 
   }
 

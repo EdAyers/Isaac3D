@@ -28,6 +28,9 @@ struct Complex
     float harmonicFactor;
     float hydrogenFactor;
 
+    public int AngularNodes { get { return Math.Abs(m); } }
+
+
     public HydrogenCalc(int n, int l, int m)
     {
       if (l > n) throw new ArgumentException("require n >= l");
@@ -108,23 +111,11 @@ struct Complex
     /// <param name="theta">angle the point makes with the z axis</param>
     /// <param name="phi">angle the point projected into the xy plane makes with the x axis</param>
     /// <returns>A complex number representing the value of the harmonic on the specified point on a unit sphere</returns>
-    public Complex SphericalHarmonic(float theta, float phi)
+    public float SphericalHarmonic(float theta)
     {
       float f = harmonicFactor * legendrePol(Mathf.Cos(theta));
-      float mag;
-      float arg = m * phi;
-      if (f < 0)
-      {
-        mag = -f;
-        arg += Mathf.PI;
-      }
-      else
-      {
-        mag = f;
-      }
-      arg = arg % (2 * Mathf.PI);
 
-      return new Complex() {mag = mag, arg = arg};
+      return f;
     }
 
     public float RadialComponent(float r)
@@ -138,11 +129,11 @@ struct Complex
       return result;
     }
 
-    public Complex Wavefunction(float r, float theta, float phi)
+    public float Wavefunction(float r, float theta, float phi)
     {
-      Complex sph = SphericalHarmonic(theta, phi);
-      float mag = sph.mag * RadialComponent(r);
-      return new Complex() {mag = mag, arg = sph.arg};
+      float mag_Y = SphericalHarmonic(theta);
+      float mag = mag_Y * RadialComponent(r);
+      return mag;
     }
 
     delegate float Polynomial(float x);
