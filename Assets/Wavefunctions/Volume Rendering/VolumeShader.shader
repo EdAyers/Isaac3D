@@ -5,29 +5,57 @@
 
     //implementation strategy based on http://www.daimi.au.dk/~trier/raycasting_shader.cg
 
-    float renderRadius; //gives the radius in space to render the volume
-    float fieldRadius;
-    sampler2D fieldData; //stores a texture; encoded as the red component being the magnitude
+    float renderRadius; //< gives the radius in space to render the volume
+    float fieldRadius;  //< applies a scaling to the rendering
+
+    ///Stores the data representing the wavefunction.
+    ///The x component encodes the field values in the radial direction
+    ///The y component encodes the field values in the theta  direction
+    ///The floats passed in the texture map seem to not support negative numbers so
+    ///The positive field values are encoded in the red channel and the negative in the blue channel.
+    sampler2D fieldData;
+
+    ///The distance between calculation steps in the ray marching
     float stepsize;
+
+    ///The absolute value of the quantum number 'm', adds nodes in the phi direction.
     int angularNodes;
 
+    ///These are two parameters that just change how the colour stacking
+    ///is calculated. The idea is that you move a slider in the unity browser
+    ///and find the best value for these by eye.
     float alphaFactor;
     float colorFactor;
 
-    // Define the interface between the vertex- and the fragment programs
+    //-------HOW IT WORKS-------
+    // - The vertex shader finds the object position and ray entry direction
+    // - Each ray has the resultant colour hitting the eye calculated by
+    //    stepping through the volume and summing the colours and transparencies
+    //    at each point on the ray's trajectory through the object.
+    // - It does this by taking all of the points of the ray and calculating their
+    //    position in polar coordinates. The R and theta values are mapped to a texture with
+    //    precalculated values and the phi component is calculated on the spot (since its just a cos function).
+    // - This is computationally intensive but amazingly modern phones can handle it without framerate dropping
+    //    to perceptible levels. Remarkable.
+
+
+    ///This is the intermediate data-type between the vertex shader and the fragment shader.
     struct vertex_fragment
     {
-       float4 ProjPos	    : POSITION; // For the rasterizer
+       float4 ProjPos	    : POSITION;  //Used by the rasterizer
        float3 Dir         : TEXCOORD0; //Gives the direction of the ray into the cube in the model's coordinate system
        float3 EntryPoint  : TEXCOORD1; //gives the model position of the vertex
     };
 
+    ///output data-type
     struct fragment_out 
     {
       float4 Color	    : COLOR;
     };
 
-    // Raycasting vertex program implementation
+    ///Standard vertex shader that also gets the
+    ///direction from eye to vertex.
+    //A bug here is causing vertices of the mesh to be rendered differently.
     vertex_fragment vertex_main( appdata_img IN)
     {    
       vertex_fragment OUT;
@@ -41,6 +69,7 @@
       return OUT;
     }
 
+    ///Converts cartesian to polar coordinates
     float3 xyz_to_rtp(float3 xyz)
     {
       float l = length(float3(xyz.x, xyz.y, 0));
@@ -48,30 +77,37 @@
       return float3(length(xyz), atan2(l, xyz.z)/3.14, phi);
     } 
 
-    float4 get_sphere_entry(float3 x, float3 d)
-    {//assume d is normalised
-      //x is the mesh position in object space
-      //we can find the point where the ray starting at x in direction d first
-      //intersects our sphere of interest
-      float b = dot(d,x);
-      float c = dot(x,x) - (renderRadius * renderRadius);
+    ///Given the object position at which the ray enters the mesh and
+    ///the normalised direction of the sight ray, this function returns the
+    ///point on a sphere of radius `renderRadius` at which the ray intersects.
+    ///We do this because it helps to ensure that the rendering of the volume doesn't
+    ///depend on the mesh it is drawn upon. Tends to go wrong at vertices and oblique angles.
+    float4 get_sphere_entry(float3 meshEntryPoint, float3 sightRay)
+    {
+      float b = dot(sightRay,meshEntryPoint);
+      float c = dot(meshEntryPoint,meshEntryPoint) - (renderRadius * renderRadius);
+      //p is the distance squared along the sight line that displaces the entry point to the surface of the sphere
       float p = (b*b) - c;
       float4 result;
       if (p <= 0)
       {
-        result = float4(2000,0,0,0); //HACK should return some kind of null value.
+        //if the entry point is further in than the sphere then we spit
+        //out the dummy and give a stupid value encoding NaN. 
+        //There's probably a more proffessional way of doing this but 
+        //I seem to remember weird things happen if I tried doing this sensibly.
+        result = float4(2000,0,0,0);
       }
       else
       {
         float s = sqrt(p);
-        float3 entryPoint = x + (-b - s) * d;
-        float3 exitPoint  = x + (-b + s) * d; 
+        float3 entryPoint = meshEntryPoint + (-b - s) * sightRay;
+        float3 exitPoint  = meshEntryPoint + (-b + s) * sightRay; 
         result = float4(entryPoint, 1);
       }
       return result;
     }
 
-    // Raycasting fragment program implementation
+    ///Workhorse. Marches rays and finds colour of a pixel.
     fragment_out fragment_main( vertex_fragment IN )
     {
       fragment_out OUT;
@@ -91,6 +127,8 @@
       float4 color_sample;
       float alpha_sample;
       float3 rtp;
+
+      //Begin the ray marching
       for(int i = 0; i < 40; i++)
       {
           //spherical textures
