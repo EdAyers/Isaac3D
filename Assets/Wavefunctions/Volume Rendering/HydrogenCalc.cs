@@ -22,7 +22,7 @@ struct Complex
   class HydrogenCalc
   {
     int n;
-    int l;
+    int l; 
     int m;
 
     float harmonicFactor;

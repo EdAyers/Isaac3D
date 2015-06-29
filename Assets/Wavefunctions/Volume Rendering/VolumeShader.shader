@@ -3,7 +3,7 @@
   CGINCLUDE
     #include "UnityCG.cginc"
 
-    //copied from http://www.daimi.au.dk/~trier/raycasting_shader.cg
+    //implementation strategy based on http://www.daimi.au.dk/~trier/raycasting_shader.cg
 
     float renderRadius; //gives the radius in space to render the volume
     float fieldRadius;
@@ -43,7 +43,7 @@
       float l = length(float3(xyz.x, xyz.y, 0));
       float phi = atan2(xyz.y, xyz.x)/6.28318530718 + 0.5;
       return float3(length(xyz), atan2(l, xyz.z)/3.14, phi);
-    }
+    } 
 
     float4 get_sphere_entry(float3 x, float3 d)
     {//assume d is normalised
@@ -103,14 +103,14 @@
           
           if (phiComp > 0)
           {
-            float r = (sample_field.r) * apc; //positive part
-            float b = (sample_field.b) * apc; //negative part
+            float r = (sample_field.r) * apc;
+            float b = (sample_field.b) * apc;
             color_sample = float4(r,0,b,1);
           }
           else
           {
-            float b = (sample_field.r) * apc; //positive part
-            float r = (sample_field.b) * apc; //negative part
+            float b = (sample_field.r) * apc;
+            float r = (sample_field.b) * apc;
             color_sample = float4(r,0,b,1);
           }
 
