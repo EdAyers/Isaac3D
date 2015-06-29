@@ -20,12 +20,13 @@ public class VolumeRenderComponent : MonoBehaviour {
 
   HydrogenCalc[] calcs =
   {
-    new HydrogenCalc(3,0,0),
+    //new HydrogenCalc(3,0,0),
     new HydrogenCalc(3,1,0),
     new HydrogenCalc(3,1,1),
     new HydrogenCalc(3,2,0),
     new HydrogenCalc(3,2,1),
-    new HydrogenCalc(3,2,2)
+    new HydrogenCalc(3,2,2),
+    //new HydrogenCalc(4,2,2)
   };
   int calcIndex = 0;
 
