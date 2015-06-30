@@ -38,7 +38,6 @@
     // - This is computationally intensive but amazingly modern phones can handle it without framerate dropping
     //    to perceptible levels. Remarkable.
 
-
     ///This is the intermediate data-type between the vertex shader and the fragment shader.
     struct vertex_fragment
     {
@@ -165,7 +164,7 @@
     fieldData ("Texture containing data about field", 2D) = "green" {} //encodes the R channel as |z| and G as arg(z)
     renderRadius ("Radius of rendering volume", Float) = 0.45
     fieldRadius ("Radius of the field", Float) = 0.5
-    stepsize ("Step Size", Float) = 0.075
+    stepsize ("Step Size", Float) = 0.035
     angularNodes ("abs(m) quantum number", Int) = 1
 
     alphaFactor ("alpha factor", Float) = 4

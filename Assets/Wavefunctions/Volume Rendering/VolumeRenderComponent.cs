@@ -116,7 +116,7 @@ public class VolumeRenderComponent : MonoBehaviour {
       }
     }
     Debug.Log(mag);
-    fieldData.filterMode = FilterMode.Point;
+    fieldData.filterMode = FilterMode.Bilinear;
     fieldData.SetPixels(sph_colors);
     fieldData.Apply();
   }
