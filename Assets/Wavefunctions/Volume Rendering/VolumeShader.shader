@@ -122,8 +122,6 @@
       float alpha_acc = 0;
       float length_acc = 0;
 
-      float sample_mag;
-      float sample_arg;
       float4 color_sample;
       float alpha_sample;
       float3 rtp;
@@ -136,28 +134,20 @@
           if (alpha_acc > 1.0 || rtp.x > renderRadius ) break;
           
           float texRadius = saturate(rtp.r /fieldRadius);
-          float4 sample_field = tex2D(fieldData, float2(texRadius, rtp.y));
+          float4 texSample = tex2D(fieldData, float2(texRadius, rtp.y));
 
-          sample_mag = sample_field.x;
           float phiComp = cos(angularNodes * rtp.z * 6.283);
-          float apc = abs(phiComp);
-          
-          if (phiComp > 0)
-          {
-            float r = (sample_field.r) * apc;
-            float b = (sample_field.b) * apc;
-            color_sample = float4(r,0,b,1);
-          }
-          else
-          {
-            float b = (sample_field.r) * apc;
-            float r = (sample_field.b) * apc;
-            color_sample = float4(r,0,b,1);
-          }
+          float apc = abs(phiComp) * texSample.a;
+
+          bool pc = phiComp > 0;
+          bool tc = texSample.b < 0.5;
+          bool b  = (pc && tc) || (!pc && !tc);
+
+          color_sample = b ? float4(0,0,1,apc) : float4(1,0,0,apc);
 
           alpha_sample = color_sample.a * stepsize * alphaFactor;
           
-          col_acc += (1.0 - alpha_acc) * color_sample * colorFactor;
+          col_acc += (1.0 - alpha_acc) * color_sample * colorFactor * alpha_sample;
 
           alpha_acc += alpha_sample;
 
@@ -165,7 +155,6 @@
           vec += delta_dir;
       } 
 
-      OUT.Color = float4((start) + float3(0.5,0.5,0.5),1);
       OUT.Color = col_acc;
 
       return OUT;
@@ -179,8 +168,8 @@
     stepsize ("Step Size", Float) = 0.075
     angularNodes ("abs(m) quantum number", Int) = 1
 
-    alphaFactor ("alpha factor", Float) = 0.3
-    colorFactor ("color factor", Float) = 0.15
+    alphaFactor ("alpha factor", Float) = 4
+    colorFactor ("color factor", Float) = 3
 	}
 	SubShader {
     Tags {"Queue" = "Transparent" }

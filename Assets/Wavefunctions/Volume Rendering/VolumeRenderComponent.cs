@@ -24,7 +24,16 @@ public class VolumeRenderComponent : MonoBehaviour {
     //new HydrogenCalc(3,1,1),
     new HydrogenCalc(3,2,0),
     new HydrogenCalc(3,2,1),
-    new HydrogenCalc(3,2,2)
+    //new HydrogenCalc(3,2,2),
+    //new HydrogenCalc(4,1,0), //texture not high fid enough :(
+    //new HydrogenCalc(4,1,1),
+    new HydrogenCalc(4,2,0),
+    new HydrogenCalc(4,2,1),
+    //new HydrogenCalc(4,2,2),
+    new HydrogenCalc(4,3,0),
+    new HydrogenCalc(4,3,1),
+    new HydrogenCalc(4,3,2),
+    //new HydrogenCalc(4,3,3)
   };
   int calcIndex = 0;
 
@@ -101,10 +110,9 @@ public class VolumeRenderComponent : MonoBehaviour {
         float theta = (float)j / h * Mathf.PI;
         mag = hydrogen.RadialComponent(r) * hydrogen.SphericalHarmonic(theta);
         mag *= 50;
-        float red = mag > 0 ? mag : 0.0f;
-        float blue = mag < 0 ? -mag : 0.0f;
-        //TODO normalise mag for visualisation rather than chemical accuracy
-        sph_colors[index] = new Color(red, 0, blue, mag) ;
+        float red = mag > 0 ? 1.0f : 0.0f;
+        float blue = mag < 0 ? 1.0f : 0.0f;
+        sph_colors[index] = new Color(red, 0, blue, Math.Abs(mag)) ;
       }
     }
     Debug.Log(mag);

@@ -126,6 +126,8 @@ struct Complex
       float part3 = laguerrePol(rho, 2 * l + 1);
 
       var result = part1 * part2 * part3 * hydrogenFactor;
+      //HACK fudge factor to get brightnesses roughly the same
+      result *= (float)(Math.Pow(2, n) / Math.Pow(2,3));
       return result;
     }
 
