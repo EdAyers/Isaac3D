@@ -42,7 +42,7 @@
     struct vertex_fragment
     {
        float4 ProjPos	    : POSITION;  //Used by the rasterizer
-       float3 Dir         : TEXCOORD0; //Gives the direction of the ray into the cube in the model's coordinate system
+       float3 Dir         : TEXCOORD2; //Gives the direction of the ray into the cube in the model's coordinate system
        float3 EntryPoint  : TEXCOORD1; //gives the model position of the vertex
     };
 

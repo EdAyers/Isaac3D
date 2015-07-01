@@ -20,7 +20,8 @@ public class VolumeRenderComponent : MonoBehaviour {
 
   HydrogenCalc[] calcs =
   {
-    new HydrogenCalc(3,1,0),
+    //new HydrogenCalc(2,1,0), //creates weird dots at the origin
+    new HydrogenCalc(3,1,1),
     //new HydrogenCalc(3,1,1),
     new HydrogenCalc(3,2,0),
     new HydrogenCalc(3,2,1),
@@ -52,7 +53,7 @@ public class VolumeRenderComponent : MonoBehaviour {
 
   void Awake()
   {
-    hydrogen = new HydrogenCalc(3, 1, 1);
+    hydrogen = calcs[0];
 
     if (volumeShader == null)
     {
@@ -78,9 +79,9 @@ public class VolumeRenderComponent : MonoBehaviour {
     if (cardboardMain.CardboardTriggered)
     {
       Debug.Log("button pressed");
+      calcIndex++;
       hydrogen = calcs[calcIndex];
       RefreshFieldData();
-      calcIndex++;
       if (calcIndex >= calcs.Length) calcIndex = 0;
     }
 	}
