@@ -74,9 +74,9 @@
     ///Converts cartesian to polar coordinates
     float3 xyz_to_rtp(float3 xyz)
     {
-      float l = length(float3(xyz.x, xyz.y, 0));
-      float phi = atan2(xyz.y, xyz.x)/6.28318530718 + 0.5;
-      return float3(length(xyz), atan2(l, xyz.z)/3.14, phi);
+      float l = length(float3(xyz.x, xyz.z, 0));
+      float phi = atan2(xyz.z, xyz.x)/6.28318530718 + 0.5;
+      return float3(length(xyz), atan2(l, xyz.y)/3.14, phi);
     } 
 
     ///Given the object position at which the ray enters the mesh and
