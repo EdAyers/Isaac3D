@@ -165,7 +165,7 @@
 
 	Properties {
     fieldData ("Texture containing data about field", 2D) = "green" {} //encodes the R channel as |z| and G as arg(z)
-    renderRadius ("Radius of rendering volume", Float) = 0.45
+    renderRadius ("Radius of rendering volume", Float) = 0.5
     fieldRadius ("Radius of the field", Float) = 0.5
     stepsize ("Step Size", Float) = 0.035
     angularNodes ("abs(m) quantum number", Int) = 1

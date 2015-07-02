@@ -20,6 +20,9 @@ public class VolumeRenderComponent : MonoBehaviour {
 
   HydrogenCalc[] calcs =
   {
+    new HydrogenCalc(2,1,1),
+    new HydrogenCalc(2,1,0),
+    new HydrogenCalc(2,1,-1),
     //new HydrogenCalc(2,1,0), //creates weird dots at the origin
     new HydrogenCalc(3,1,1),
     new HydrogenCalc(3,1,0),
@@ -28,7 +31,25 @@ public class VolumeRenderComponent : MonoBehaviour {
     new HydrogenCalc(3,2,1),
     new HydrogenCalc(3,2,0),
     new HydrogenCalc(3,2,-1),
-    new HydrogenCalc(3,2,-2)
+    new HydrogenCalc(3,2,-2),
+
+    new HydrogenCalc(4,1,1),
+    new HydrogenCalc(4,1,0),
+    new HydrogenCalc(4,1,-1),
+
+    new HydrogenCalc(4,2,2),
+    new HydrogenCalc(4,2,1),
+    new HydrogenCalc(4,2,0),
+    new HydrogenCalc(4,2,-1),
+    new HydrogenCalc(4,2,-2),
+
+    new HydrogenCalc(4,3, 3),
+    new HydrogenCalc(4,3, 2),
+    new HydrogenCalc(4,3, 1),
+    new HydrogenCalc(4,3, 0),
+    new HydrogenCalc(4,3,-1),
+    new HydrogenCalc(4,3,-2),
+    new HydrogenCalc(4,3,-3)
   };
   int calcIndex = 0;
 
@@ -50,6 +71,7 @@ public class VolumeRenderComponent : MonoBehaviour {
 
   void Awake()
   {
+	Screen.sleepTimeout = SleepTimeout.NeverSleep;
     orbitalText = GameObject.Find("OrbitalLabel").GetComponent<UnityEngine.UI.Text>();
     mText = GameObject.Find("MLabel").GetComponent<UnityEngine.UI.Text>();
 
