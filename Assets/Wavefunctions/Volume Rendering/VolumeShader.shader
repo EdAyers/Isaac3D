@@ -21,6 +21,9 @@
     ///The absolute value of the quantum number 'm', adds nodes in the phi direction.
     int angularNodes;
 
+    ///Value by which to rotate the m values
+    float rotation;
+
     ///These are two parameters that just change how the colour stacking
     ///is calculated. The idea is that you move a slider in the unity browser
     ///and find the best value for these by eye.
@@ -135,7 +138,7 @@
           float texRadius = saturate(rtp.r /fieldRadius);
           float4 texSample = tex2D(fieldData, float2(texRadius, rtp.y));
 
-          float phiComp = cos(angularNodes * rtp.z * 6.283);
+          float phiComp = cos(angularNodes * rtp.z * 6.283 + rotation);
           float apc = abs(phiComp) * texSample.a;
 
           bool pc = phiComp > 0;
@@ -166,6 +169,7 @@
     fieldRadius ("Radius of the field", Float) = 0.5
     stepsize ("Step Size", Float) = 0.035
     angularNodes ("abs(m) quantum number", Int) = 1
+    rotation ("phi rotation", Float) = 0.0
 
     alphaFactor ("alpha factor", Float) = 4
     colorFactor ("color factor", Float) = 3

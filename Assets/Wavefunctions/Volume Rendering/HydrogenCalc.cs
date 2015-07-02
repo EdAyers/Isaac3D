@@ -36,7 +36,82 @@ struct Complex
       }
     }
 
+    public string OrbitalLabel
+    {
+      get
+      {
+        StringBuilder sb = new StringBuilder();
+        sb.Append(n.ToString());
+        switch (l)
+        {
+          case 0: sb.Append("s "); break;
+          case 1:
+            sb.Append("p ");
+            break;
+          case 2:
+            sb.Append("d ");
+            break;
+          case 3:
+            sb.Append("f ");
+            break;
+          default:
+            sb.Append(((char)('f' + l - 3)) + " ");
+            break;
+        }
+        return sb.ToString();
+      }
+    }
+
+    public string MLabel
+    {
+      get
+      {
+        switch (l)
+        {
+          case 0: return "";
+          case 1:
+            if (m == 1) return "x";
+            if (m == 0) return "z";
+            if (m == -1) return "y";
+            break;
+          case 2:
+            if (m == 2) return "xy";
+            if (m == 1) return "xz";
+            if (m == 0) return "zz";
+            if (m == -1) return "yz";
+            if (m == -2) return "(xx-yy)";
+            break;
+          case 3:
+            if (m == 3) return "x(xx-3yy)";
+            if (m == 2) return "xyz";
+            if (m == 1) return "xzz";
+            if (m == 0) return "zzz";
+            if (m == -1) return "yzz";
+            if (m == -2) return "z(xx-yy)" ;
+            if (m == -3) return "y(3xx-yy)";
+            break;
+          default:
+            return " (m = " + m + ")" ;
+        }
+        return "???";
+      }
+    }
+
+
+
     public int AngularNodes { get { return Math.Abs(m); } }
+    ///When we calculate the wavefunctions, we find the two real solutions
+    ///by finding two linear combos of functions with the same |m| value.
+    ///These two solutions differ only by a rotation, so we can use the same
+    ///texture to show both and then tell the engine to rotate one.
+    ///This is slightly abusive of notation, since the displayed functions are
+    ///not actually eigenstates of m but of |m|, but we reassign the
+    ///meaning of the sign of m to tell us which rotation to look at.
+    public float Rotation { get 
+    {
+      if (m >= 0) { return 0.0f; }
+      else { return (float)Math.PI / (2 * m); }
+    } }
 
     public HydrogenCalc(int n, int l, int m)
     {

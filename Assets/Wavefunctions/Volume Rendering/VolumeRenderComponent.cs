@@ -46,6 +46,9 @@ public class VolumeRenderComponent : MonoBehaviour {
 
   private Cardboard cardboardMain;
 
+  UnityEngine.UI.Text orbitalText;
+  UnityEngine.UI.Text mText;
+
   void Reset()
   {
 
@@ -53,6 +56,9 @@ public class VolumeRenderComponent : MonoBehaviour {
 
   void Awake()
   {
+    orbitalText = GameObject.Find("OrbitalLabel").GetComponent<UnityEngine.UI.Text>();
+    mText = GameObject.Find("MLabel").GetComponent<UnityEngine.UI.Text>();
+
     hydrogen = calcs[0];
 
     if (volumeShader == null)
@@ -80,9 +86,9 @@ public class VolumeRenderComponent : MonoBehaviour {
     {
       Debug.Log("button pressed");
       calcIndex++;
+      if (calcIndex >= calcs.Length) calcIndex = 0;
       hydrogen = calcs[calcIndex];
       RefreshFieldData();
-      if (calcIndex >= calcs.Length) calcIndex = 0;
     }
 	}
 
@@ -91,6 +97,9 @@ public class VolumeRenderComponent : MonoBehaviour {
       GenerateSphereTextures();
       volumeShaderMaterial.SetTexture("fieldData", fieldData);
       volumeShaderMaterial.SetInt("angularNodes", hydrogen.AngularNodes);
+      volumeShaderMaterial.SetFloat("rotation", hydrogen.Rotation);
+      orbitalText.text = hydrogen.OrbitalLabel;
+      mText.text = hydrogen.MLabel;
   }
 
   void GenerateSphereTextures()
