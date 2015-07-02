@@ -11,10 +11,10 @@ struct Complex
 
   static public Complex FromRI(float r, float i)
   {
-    return new Complex() 
-    { 
+    return new Complex()
+    {
       mag = Mathf.Sqrt(r * r + i * i),
-      arg = Mathf.Atan2(i, r) 
+      arg = Mathf.Atan2(i, r)
     };
   }
 }
@@ -22,7 +22,7 @@ struct Complex
   class HydrogenCalc
   {
     int n;
-    int l; 
+    int l;
     int m;
 
     float harmonicFactor;
@@ -107,7 +107,7 @@ struct Complex
     ///This is slightly abusive of notation, since the displayed functions are
     ///not actually eigenstates of m but of |m|, but we reassign the
     ///meaning of the sign of m to tell us which rotation to look at.
-    public float Rotation { get 
+    public float Rotation { get
     {
       if (m >= 0) { return 0.0f; }
       else { return (float)Math.PI / (2 * m); }
@@ -131,7 +131,7 @@ struct Complex
       {
         f /= i;
       }
-      
+
       harmonicFactor = Mathf.Sqrt(f);
       //select the legendre polynomial
 
@@ -219,7 +219,7 @@ struct Complex
     Polynomial legendrePol;
     LagPoly laguerrePol;
 
-    //For now just hard-code the first few legendre polynomials 
+    //For now just hard-code the first few legendre polynomials
     float P00(float x) { return 1f; }
     float P01(float x) { return x; }
     float P11(float x) { return - Mathf.Sqrt(1 - x * x); }

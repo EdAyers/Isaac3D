@@ -67,7 +67,6 @@
       OUT.EntryPoint = IN.vertex.xyz;
       float3 d = - normalize(ObjSpaceViewDir(IN.vertex)); //ObjSpaceViewDir gives a vector facing towards the camera
       OUT.Dir = d;
-      
       return OUT;
     }
 
