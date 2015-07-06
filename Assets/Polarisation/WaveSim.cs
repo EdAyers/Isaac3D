@@ -1,81 +1,103 @@
 ﻿using UnityEngine;
 using System.Collections;
-
-public struct Waveplate
+using System.Collections.Generic;
+namespace Assets
 {
-  public float position;
-  public Complex m00;
-  public Complex m10;
-  public Complex m01;
-  public Complex m11;
-  public Waveplate(Complex m00, Complex m10, Complex m01, Complex m11)
+
+
+  public class WaveSim : MonoBehaviour
   {
-    this.position = 0;
-    this.m00 = m00;
-    this.m10 = m10;
-    this.m11 = m11;
-    this.m01 = m01;
-  }
-  public Waveplate(
-    float m00r, float m00i, 
-    float m10r, float m10i, 
-    float m01r, float m01i, 
-    float m11r, float m11i)
-  {
-    this.position = 0;
-    this.m00 = new Complex(m00r,m00i);
-    this.m10 = new Complex(m10r,m10i);
-    this.m01 = new Complex(m01r,m01i);
-    this.m11 = new Complex(m11r,m11i);
-  }
-  public static Waveplate operator *(Waveplate a, Waveplate b)
-  {
-    return new Waveplate(
-        a.m01 * b.m10 + a.m00 * b.m00,
-        a.m10 * b.m00 + a.m11 * b.m10,
-        a.m00 * b.m01 + a.m01 * b.m11,
-        a.m11 * b.m11 + a.m10 * b.m01
-      );
-  }
-  public static Waveplate operator +(Waveplate a, Waveplate b)
-  {
-    return new Waveplate()
+    static Material lineMaterial;
+    public CMatrix2 CMatrix2;
+    // Use this for initialization
+    void Start()
     {
-      m00 = a.m00 + b.m00,
-      m01 = a.m01 + b.m01,
-      m10 = a.m10 + b.m10,
-      m11 = a.m11 + b.m11
-    };
-  }
-  public static Waveplate ID()
-  {
-    return new Waveplate(1, 0, 0, 0, 0, 0, 1, 0);
-  }
-  public static Waveplate QuarterWaveplate()
-  {
-    return new Waveplate(1, 0, 0, 0, 0, 0, 0, 1);
-  }
-  public static Waveplate LinearPolariser()
-  {
-    return new Waveplate(1, 0, 0, 0, 0, 0, 0, 1);
-  }
-  public static Waveplate Rotation(float theta)
-  {
-    var c = Mathf.Cos(theta);
-    var s = Mathf.Sin(theta);
-    return new Waveplate(c, 0, s, 0, -s, 0, c, 1);
-  }
-}
+      Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
-public class WaveSim : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-	  
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+      CMatrix2 = CMatrix2.QuarterWaveplate();
+
+      //add  blocks which represent the polariser
+      GameObject root = GameObject.Find("waveRoot");
+
+      //GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
+      //cube.transform.localScale = new Vector3(0.01f, 1f, 1f);
+
+      //add the line
+      CreateLineMaterial();
+
+
+      //animate the line.
+    }
+    static void CreateLineMaterial()
+    {
+      if (!lineMaterial)
+      {
+        // Unity has a built-in shader that is useful for drawing
+        // simple colored things.
+        var shader = Shader.Find("Hidden/Internal-Colored");
+        lineMaterial = new Material(shader);
+        lineMaterial.hideFlags = HideFlags.HideAndDontSave;
+        // Turn on alpha blending
+        lineMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+        lineMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+        // Turn backface culling off
+        lineMaterial.SetInt("_Cull", (int)UnityEngine.Rendering.CullMode.Off);
+        // Turn off depth writes
+        lineMaterial.SetInt("_ZWrite", 0);
+      }
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+      time += 0.01f;
+      startAngle += 0.001f;
+    }
+
+    public float time = 0.0f;
+    public float startAngle = 0.0f;
+
+    // Will be called after all regular rendering is done
+    public void OnRenderObject()
+    {
+      CreateLineMaterial();
+      // Apply the line material
+      lineMaterial.SetPass(0);
+
+      GL.PushMatrix();
+      // Set transformation matrix for drawing to
+      // match our transform
+      //GL.MultMatrix(transform.localToWorldMatrix);
+
+      // Draw lines
+      GL.Begin(GL.LINES);
+      GL.Color(new Color(1, 0, 0, 0.8F));
+      // One vertex at transform position
+      for (int i = 0; i < 1000; i++)
+      {
+        var x = ((float)i / 500 - 1.0f) * 10;
+        var phase = new Complex(1, (time - x) * 10.0f);
+        var exp = 0.1f * Complex.Exp(phase);
+        var jonesVectorX = Mathf.Cos(startAngle) * exp;
+        var jonesVectorY = Mathf.Sin(startAngle) * exp;
+        if (i == 0) { GL.Vertex3(x, jonesVectorX.R, jonesVectorY.R); }
+
+        if (x < 0f)
+        {
+          GL.Vertex3(x, jonesVectorX.R, jonesVectorY.R);
+          GL.Vertex3(x, jonesVectorX.R, jonesVectorY.R);
+       }
+        else
+        {
+          var result = CMatrix2 * new CMatrix2(jonesVectorX, jonesVectorY, Complex.Zero(), Complex.Zero());
+          GL.Vertex3(x, result.m00.R, result.m10.R);
+          GL.Vertex3(x, result.m00.R, result.m10.R);
+        }
+
+      }
+      GL.End();
+      GL.PopMatrix();
+    }
+  }
 }

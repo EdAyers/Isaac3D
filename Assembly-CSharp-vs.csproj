@@ -56,8 +56,10 @@
      <Compile Include="Assets\Cardboard\Scripts\SkyboxMesh.cs" />
      <Compile Include="Assets\Cardboard\Scripts\StereoController.cs" />
      <Compile Include="Assets\Cardboard\Scripts\StereoLensFlare.cs" />
+     <Compile Include="Assets\Polarisation\Complex.cs" />
      <Compile Include="Assets\Polarisation\Lines.cs" />
      <Compile Include="Assets\Polarisation\WaveSim.cs" />
+     <Compile Include="Assets\Polarisation\Waveplate.cs" />
      <Compile Include="Assets\Wavefunctions\Volume Rendering\HydrogenCalc.cs" />
      <Compile Include="Assets\Wavefunctions\Volume Rendering\RayMarching.cs" />
      <Compile Include="Assets\Wavefunctions\Volume Rendering\VolumeRenderComponent.cs" />
