@@ -66,10 +66,10 @@ namespace Assets
     public float startAngle = 0.0f;
     Waveplate waveplate;
 
-    float initialX = -10.0f;
-    float finalX = +10.0f;
+    float initialX = -5.0f;
+    float finalX = +5.0f;
     const int STEPS = 1000;
-    float wavenumber = 20f;
+    public float wavenumber = 20f;
     float speedOfLight = 0.5f;
 
     // Will be called after all regular rendering is done
@@ -99,20 +99,21 @@ namespace Assets
         wavenumber, 
         waveplate.FinishPosition - waveplate.StartPosition);
       GL.Vertex3(initialX, initialVector.X.R, initialVector.Y.R);
-
+      var color = new Color(1,0,0,1);
 
       for (int i = 0; i < STEPS; i++)
       {
+        color = new Color(1, 0, 0, 1);
         var jonesVector = initialVector;
         float x = initialX + (i * (finalX - initialX) / STEPS);
         if (x < waveplate.StartPosition)
         {
-          GL.Color(new Color(1, 0, 0, 1));
+          //GL.Color(new Color(1, 0, 0, 1));
           jonesVector = Complex.Rotate((initialX - x) * wavenumber) * initialVector;
         }
         else if (x < waveplate.FinishPosition)
         {
-          GL.Color( waveplate.LineColor);
+          color = ( waveplate.LineColor);
           jonesVector = waveplate.GetWave(
             interface1, 
             wavenumber, 
@@ -120,12 +121,21 @@ namespace Assets
         }
         else
         {
-          GL.Color(new Color(1, 0, 0, 1));
+          //GL.Color(new Color(1, 0, 0, 1));
           jonesVector = Complex.Rotate((waveplate.FinishPosition - x) * wavenumber) * interface2;
         }
         jonesVector = 0.3f * jonesVector;
+        GL.Color(color);
         GL.Vertex3(x, jonesVector.X.R, jonesVector.Y.R);
         GL.Vertex3(x, jonesVector.X.R, jonesVector.Y.R);
+
+        //if (i % 10 == 0)
+        //{
+        //  GL.Color(color / 2);
+        //  GL.Vertex3(x, 0, 0);
+        //  GL.Vertex3(x, jonesVector.X.R, jonesVector.Y.R);
+
+        //}
 
 
       }
