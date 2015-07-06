@@ -6,16 +6,54 @@ using UnityEngine;
 
 struct Complex
 {
-  public float mag;
-  public float arg;
+  public float real;
+  public float imag;
 
   static public Complex FromRI(float r, float i)
   {
     return new Complex()
     {
-      mag = Mathf.Sqrt(r * r + i * i),
-      arg = Mathf.Atan2(i, r)
+      real = r,
+      imag = i
     };
+  }
+
+  public Complex(float r, float i)
+  {
+    real = r;
+    imag = i;
+  }
+
+  public float R
+  {
+    get { return real; }
+    set { real = value; }
+  }
+  public float I
+  {
+    get { return imag; }
+    set { imag = value; }
+  }
+  public float Mag
+  {
+    get { return Mathf.Sqrt(R * R + I * I); }
+  }
+  public float Arg
+  {
+    get { return Mathf.Atan2(I, R); }
+  }
+
+  static public Complex operator *(Complex a, Complex b)
+  {
+    return new Complex(a.R * b.R - a.I * b.I, a.R * b.I + a.I * b.R);
+  }
+  static public Complex operator +(Complex a, Complex b)
+  {
+    return new Complex(a.R + b.R, a.I + b.I);
+  }
+  static public Complex operator -(Complex a)
+  {
+    return new Complex(-a.R, -a.I);
   }
 }
 
