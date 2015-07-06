@@ -67,6 +67,10 @@ namespace Assets
       float mag = Mathf.Exp(x.R);
       return mag * arg;
     }
+    static public Complex Rotate(float x)
+    {
+      return new Complex(Mathf.Cos(x), Mathf.Sin(x));
+    }
     static public Complex Zero()
     {
       return new Complex(0, 0);
@@ -154,5 +158,14 @@ namespace Assets
     {
       return new CVector2(m.m00 * v.X + m.m01 * v.Y, m.m10 * v.X + m.m11 * v.Y);
     }
+    public static CVector2 operator *(float x, CVector2 v)
+    {
+      return new CVector2(x * v.X, x * v.Y);
+    }
+    public static CVector2 operator *(Complex x, CVector2 v)
+    {
+      return new CVector2(x * v.X, x * v.Y);
+    }
+
   }
 }

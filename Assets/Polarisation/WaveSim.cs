@@ -20,6 +20,13 @@ namespace Assets
       //add  blocks which represent the polariser
       GameObject root = GameObject.Find("waveRoot");
 
+      GameObject cube = GameObject.Find("PlateCube");
+      waveplate = (new Birefringent() { StartPosition = -0.5f, Thickness = 1});
+      cube.transform.Translate(
+        (waveplate.FinishPosition + waveplate.StartPosition) / 2, 0, 0);
+      cube.transform.localScale = new Vector3(
+        waveplate.FinishPosition - waveplate.StartPosition,
+        1,1);
       //GameObject cube = GameObject.CreatePrimitive(PrimitiveType.Cube);
       //cube.transform.localScale = new Vector3(0.01f, 1f, 1f);
 
@@ -51,53 +58,80 @@ namespace Assets
     // Update is called once per frame
     void Update()
     {
-      time += 0.01f;
+      time += 0.1f;
       startAngle += 0.001f;
     }
 
     public float time = 0.0f;
     public float startAngle = 0.0f;
+    Waveplate waveplate;
+
+    float initialX = -10.0f;
+    float finalX = +10.0f;
+    const int STEPS = 1000;
+    float wavenumber = 20f;
+    float speedOfLight = 0.5f;
 
     // Will be called after all regular rendering is done
     public void OnRenderObject()
     {
+      if (waveplate == null) return;
       CreateLineMaterial();
       // Apply the line material
       lineMaterial.SetPass(0);
 
-      GL.PushMatrix();
+      //GL.PushMatrix();
       // Set transformation matrix for drawing to
       // match our transform
       //GL.MultMatrix(transform.localToWorldMatrix);
 
       // Draw lines
       GL.Begin(GL.LINES);
-      GL.Color(new Color(1, 0, 0, 0.8F));
-      // One vertex at transform position
-      for (int i = 0; i < 1000; i++)
-      {
-        var x = ((float)i / 500 - 1.0f) * 10;
-        var phase = new Complex(1, (time - x) * 10.0f);
-        var exp = 0.1f * Complex.Exp(phase);
-        var jonesVectorX = Mathf.Cos(startAngle) * exp;
-        var jonesVectorY = Mathf.Sin(startAngle) * exp;
-        if (i == 0) { GL.Vertex3(x, jonesVectorX.R, jonesVectorY.R); }
+ 
+      var initialVector = Complex.Rotate(time * speedOfLight) * new CVector2(
+          Mathf.Cos(startAngle), 0,
+          Mathf.Sin(startAngle), 0
+        );
 
-        if (x < 0f)
+      var interface1 = Complex.Rotate((initialX - waveplate.StartPosition) * wavenumber) * initialVector;
+      var interface2 = waveplate.GetWave(
+        interface1, 
+        wavenumber, 
+        waveplate.FinishPosition - waveplate.StartPosition);
+      GL.Vertex3(initialX, initialVector.X.R, initialVector.Y.R);
+
+
+      for (int i = 0; i < STEPS; i++)
+      {
+        var jonesVector = initialVector;
+        float x = initialX + (i * (finalX - initialX) / STEPS);
+        if (x < waveplate.StartPosition)
         {
-          GL.Vertex3(x, jonesVectorX.R, jonesVectorY.R);
-          GL.Vertex3(x, jonesVectorX.R, jonesVectorY.R);
-       }
+          GL.Color(new Color(1, 0, 0, 1));
+          jonesVector = Complex.Rotate((initialX - x) * wavenumber) * initialVector;
+        }
+        else if (x < waveplate.FinishPosition)
+        {
+          GL.Color( waveplate.LineColor);
+          jonesVector = waveplate.GetWave(
+            interface1, 
+            wavenumber, 
+            x - waveplate.StartPosition);
+        }
         else
         {
-          var result = CMatrix2 * new CMatrix2(jonesVectorX, jonesVectorY, Complex.Zero(), Complex.Zero());
-          GL.Vertex3(x, result.m00.R, result.m10.R);
-          GL.Vertex3(x, result.m00.R, result.m10.R);
+          GL.Color(new Color(1, 0, 0, 1));
+          jonesVector = Complex.Rotate((waveplate.FinishPosition - x) * wavenumber) * interface2;
         }
+        jonesVector = 0.3f * jonesVector;
+        GL.Vertex3(x, jonesVector.X.R, jonesVector.Y.R);
+        GL.Vertex3(x, jonesVector.X.R, jonesVector.Y.R);
+
 
       }
+
       GL.End();
-      GL.PopMatrix();
+      //GL.PopMatrix();
     }
   }
 }
