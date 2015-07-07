@@ -289,6 +289,7 @@ public class Cardboard : MonoBehaviour {
           Debug.LogWarning("Cardboard SDK object should be a singleton.");
           enabled = false;
       }
+      Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
       config.initialize();
 

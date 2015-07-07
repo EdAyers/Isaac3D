@@ -56,6 +56,9 @@
      <Compile Include="Assets\Cardboard\Scripts\SkyboxMesh.cs" />
      <Compile Include="Assets\Cardboard\Scripts\StereoController.cs" />
      <Compile Include="Assets\Cardboard\Scripts\StereoLensFlare.cs" />
+     <Compile Include="Assets\Gyroid\GyroidBehaviour.cs" />
+     <Compile Include="Assets\Gyroid\MeshSaver.cs" />
+     <Compile Include="Assets\Gyroid\tesselate.cs" />
      <Compile Include="Assets\Polarisation\Complex.cs" />
      <Compile Include="Assets\Polarisation\Lines.cs" />
      <Compile Include="Assets\Polarisation\WaveSim.cs" />
