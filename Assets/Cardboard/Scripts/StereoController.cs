@@ -129,7 +129,12 @@ public class StereoController : MonoBehaviour {
     if (Head == null) {
       gameObject.AddComponent<CardboardHead>();
     }
-    if (GetComponent<Camera>().tag == "MainCamera" && GetComponent<SkyboxMesh>() == null) {
+    var camera = GetComponent<Camera>();
+    if (
+      camera.tag == "MainCamera" 
+      && camera.clearFlags == CameraClearFlags.Skybox
+      && GetComponent<SkyboxMesh>() == null) 
+    {
       gameObject.AddComponent<SkyboxMesh>();
     }
   }

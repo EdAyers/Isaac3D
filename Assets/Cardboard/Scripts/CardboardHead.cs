@@ -60,8 +60,7 @@ public class CardboardHead : MonoBehaviour {
     
     var rot = Cardboard.SDK.HeadRotation;
 
-    //our parent is a gameobject called CardboardMain
-    transform.localPosition = new Vector3(0, 0, -lookAroundDistance); //TODO is this efficient?
+    transform.localPosition = new Vector3(0, 0, -lookAroundDistance);
     transform.parent.localRotation = rot;
   }
 }
