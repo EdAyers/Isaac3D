@@ -151,11 +151,9 @@ namespace Assets
       {//need to multiply by extra factor
         harmonicFactor *= (a % 2 == 0 ? 1 : -1);
       }
-      Debug.Log("harmonicFactor = " + harmonicFactor);
 
       //TODO calculate radial factor
       int lagN = n - l - 1;
-      Debug.Log("lagN = " + lagN);
       if (lagN == 0) laguerrePol = L0;
       else if (lagN == 1) laguerrePol = L1;
       else if (lagN == 2) laguerrePol = L2;
@@ -166,15 +164,12 @@ namespace Assets
       }
 
       f = Mathf.Pow(2f / n, 3f) / (2 * n);
-      Debug.Log("f = " + f);
 
       for (int i = n - l; i <= n + l; i++)
       {
         f /= i;
-        Debug.Log("f = " + f);
       }
       hydrogenFactor = Mathf.Sqrt(f);
-      Debug.Log("hydrogenFactor = " + hydrogenFactor);
     }
 
     public float SphericalHarmonic(float theta)

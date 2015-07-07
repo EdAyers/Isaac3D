@@ -58,6 +58,7 @@
      <Compile Include="Assets\Demonstrations\Gyroid\GyroidBehaviour.cs" />
      <Compile Include="Assets\Demonstrations\Gyroid\MeshSaver.cs" />
      <Compile Include="Assets\Demonstrations\Gyroid\tesselate.cs" />
+     <Compile Include="Assets\Demonstrations\Menu\MenuGenerator.cs" />
      <Compile Include="Assets\Demonstrations\Orbitals\HydrogenCalc.cs" />
      <Compile Include="Assets\Demonstrations\Orbitals\Teleport.cs" />
      <Compile Include="Assets\Demonstrations\Orbitals\VolumeRenderComponent.cs" />

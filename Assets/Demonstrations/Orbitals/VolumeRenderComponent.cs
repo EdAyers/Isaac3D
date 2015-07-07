@@ -91,7 +91,6 @@ namespace Assets
       RefreshFieldData();
 
       cardboardMain = GetComponentInChildren(typeof(Cardboard)) as Cardboard;
-      Debug.Log("cardboardMain = " + cardboardMain);
     }
 
     // Use this for initialization
@@ -104,7 +103,6 @@ namespace Assets
     {
       if (cardboardMain.CardboardTriggered)
       {
-        Debug.Log("button pressed");
         calcIndex++;
         if (calcIndex >= calcs.Length) calcIndex = 0;
         hydrogen = calcs[calcIndex];
@@ -145,7 +143,7 @@ namespace Assets
           sph_colors[index] = new Color(red, 0, blue, Math.Abs(mag));
         }
       }
-      Debug.Log(mag);
+
       fieldData.filterMode = FilterMode.Bilinear;
       fieldData.SetPixels(sph_colors);
       fieldData.Apply();
