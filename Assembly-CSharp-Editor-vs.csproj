@@ -49,13 +49,9 @@
      <Compile Include="Assets\Cardboard\Editor\CardboardEditor.cs" />
      <Compile Include="Assets\Cardboard\Editor\StereoControllerEditor.cs" />
      <None Include="Assets\Cardboard\Resources\SkyboxMesh.shader" />
-     <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
      <None Include="Assets\Cardboard\Resources\GUIScreen.shader" />
      <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
-     <None Include="Assets\Wavefunctions\Volume Rendering\VolumeShader.shader" />
- <Reference Include="Assembly-UnityScript-firstpass">
- <HintPath>E:/Projects/Unity/CardboardWaveViewer/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
- </Reference>
+     <None Include="Assets\Demonstrations\Orbitals\VolumeShader.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>E:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

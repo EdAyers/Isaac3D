@@ -46,7 +46,6 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Cardboard\DemoScene\Teleport.cs" />
      <Compile Include="Assets\Cardboard\Scripts\Cardboard.cs" />
      <Compile Include="Assets\Cardboard\Scripts\CardboardEye.cs" />
      <Compile Include="Assets\Cardboard\Scripts\CardboardGUI.cs" />
@@ -56,24 +55,20 @@
      <Compile Include="Assets\Cardboard\Scripts\SkyboxMesh.cs" />
      <Compile Include="Assets\Cardboard\Scripts\StereoController.cs" />
      <Compile Include="Assets\Cardboard\Scripts\StereoLensFlare.cs" />
-     <Compile Include="Assets\Gyroid\GyroidBehaviour.cs" />
-     <Compile Include="Assets\Gyroid\MeshSaver.cs" />
-     <Compile Include="Assets\Gyroid\tesselate.cs" />
-     <Compile Include="Assets\Polarisation\Complex.cs" />
-     <Compile Include="Assets\Polarisation\Lines.cs" />
-     <Compile Include="Assets\Polarisation\WaveSim.cs" />
-     <Compile Include="Assets\Polarisation\Waveplate.cs" />
-     <Compile Include="Assets\Wavefunctions\Volume Rendering\HydrogenCalc.cs" />
-     <Compile Include="Assets\Wavefunctions\Volume Rendering\RayMarching.cs" />
-     <Compile Include="Assets\Wavefunctions\Volume Rendering\VolumeRenderComponent.cs" />
+     <Compile Include="Assets\Demonstrations\Gyroid\GyroidBehaviour.cs" />
+     <Compile Include="Assets\Demonstrations\Gyroid\MeshSaver.cs" />
+     <Compile Include="Assets\Demonstrations\Gyroid\tesselate.cs" />
+     <Compile Include="Assets\Demonstrations\Orbitals\HydrogenCalc.cs" />
+     <Compile Include="Assets\Demonstrations\Orbitals\Teleport.cs" />
+     <Compile Include="Assets\Demonstrations\Orbitals\VolumeRenderComponent.cs" />
+     <Compile Include="Assets\Demonstrations\Polarisation\Complex.cs" />
+     <Compile Include="Assets\Demonstrations\Polarisation\Lines.cs" />
+     <Compile Include="Assets\Demonstrations\Polarisation\WaveSim.cs" />
+     <Compile Include="Assets\Demonstrations\Polarisation\Waveplate.cs" />
      <None Include="Assets\Cardboard\Resources\SkyboxMesh.shader" />
-     <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
      <None Include="Assets\Cardboard\Resources\GUIScreen.shader" />
      <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
-     <None Include="Assets\Wavefunctions\Volume Rendering\VolumeShader.shader" />
- <Reference Include="Assembly-UnityScript-firstpass">
- <HintPath>E:/Projects/Unity/CardboardWaveViewer/Library/ScriptAssemblies/Assembly-UnityScript-firstpass.dll</HintPath>
- </Reference>
+     <None Include="Assets\Demonstrations\Orbitals\VolumeShader.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>E:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

@@ -5,8 +5,6 @@ Project("{E8189F8C-62DA-945B-C6F6-818DCE7F5D74}") = "CardboardWaveViewer", "Asse
 EndProject
 Project("{E8189F8C-62DA-945B-C6F6-818DCE7F5D74}") = "CardboardWaveViewer", "Assembly-CSharp-Editor.csproj", "{9CAFEC30-A931-4B21-4987-657F319FC5DA}"
 EndProject
-Project("{E8189F8C-62DA-945B-C6F6-818DCE7F5D74}") = "CardboardWaveViewer", "Assembly-UnityScript-firstpass.unityproj", "{C5DACA28-A493-E730-D6DB-F3B17A7B6793}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,10 +19,6 @@ Global
 		{9CAFEC30-A931-4B21-4987-657F319FC5DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9CAFEC30-A931-4B21-4987-657F319FC5DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9CAFEC30-A931-4B21-4987-657F319FC5DA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C5DACA28-A493-E730-D6DB-F3B17A7B6793}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C5DACA28-A493-E730-D6DB-F3B17A7B6793}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C5DACA28-A493-E730-D6DB-F3B17A7B6793}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C5DACA28-A493-E730-D6DB-F3B17A7B6793}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
