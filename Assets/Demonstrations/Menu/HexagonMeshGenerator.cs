@@ -3,6 +3,7 @@ using System.Collections;
 
 public class HexagonMeshGenerator : MonoBehaviour {
 
+  public int n = 6;
 	// Use this for initialization
 	void Start () {
     
@@ -12,31 +13,40 @@ public class HexagonMeshGenerator : MonoBehaviour {
       return;
     }
 
-    Mesh mesh = new Mesh();
-    Vector3[] vertices = new Vector3[6];
-    Vector3[] normals = new Vector3[6];
-    int[] triangles = new int[]
-      {
-        0,1,2,
-        0,2,5,
-        5,2,3,
-        5,3,4
-      };
 
-    for (int i = 0; i < 6; i++)
+    meshfilter.mesh = MakeNGon(n);
+	}
+  Mesh MakeNGon(int n)
+  {
+    if (n < 3)
     {
-      float t = (2 * Mathf.PI) * i / 6f;
+      Debug.LogError("n was less than 3");
+      return null;
+    }
+    Mesh mesh = new Mesh();
+    Vector3[] vertices = new Vector3[n];
+    Vector3[] normals = new Vector3[n];
+    int[] triangles = new int[3 * (n - 2)];
+
+    for (int i = 0; i < n; i++)
+    {
+      float t = (2 * Mathf.PI) * i / n;
       vertices[i] = new Vector3(Mathf.Sin(t), Mathf.Cos(t));
       normals[i] = new Vector3(0, 0, 1);
+    }
+    for (int i = 0; i < (n - 2); i++ )
+    {
+      var j = i * 3;
+      triangles[j + 0] = 0;
+      triangles[j + 1] = i + 1;
+      triangles[j + 2] = i + 2;
     }
 
     mesh.vertices = vertices;
     mesh.normals = normals;
     mesh.triangles = triangles;
-
-    meshfilter.mesh = mesh;
-	}
-	
+    return mesh;
+  }	
 	// Update is called once per frame
 	void Update () {
 	
