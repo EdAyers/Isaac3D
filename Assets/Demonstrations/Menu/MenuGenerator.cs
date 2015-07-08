@@ -12,6 +12,7 @@ public class MenuGenerator : MonoBehaviour
   void Start()
   {
     CreateGrid();
+    MakeElements();
   }
 
   void EvenPermutations(Vector3 start, int index, Vector3[] result)
@@ -40,6 +41,17 @@ public class MenuGenerator : MonoBehaviour
     }
   }
 
+  //Potential employers reading this code:
+  //This is super-hacky. Instead of judging me, please
+  //see this as proof that I can adapt my coding style for
+  //speed over readability, functionality, dignity for
+  //appropriate situations. I'm versatile!
+
+  public float platesep;
+
+  Vector3[] verts;
+  Vector3[] edgeCenters;
+
   void CreateGrid()
   {
     float d = Mathf.PI / 2 / (layers - 1);
@@ -48,12 +60,12 @@ public class MenuGenerator : MonoBehaviour
     //vertices on a icosohedron; where the pentagons are
     var a = 1.0f;
     var phi = (1 + Mathf.Sqrt(5)) / 2;
-    Vector3[] verts = new Vector3[12];
+    verts = new Vector3[12];
     EvenPermutations(new Vector3(1, phi) * a, 0, verts);
     EvenPermutations(new Vector3(-1, phi) * a, 3, verts);
     EvenPermutations(new Vector3(-1, -phi) * a, 6, verts);
     EvenPermutations(new Vector3(1, -phi) * a, 9, verts);
-    Vector3[] edgeCenters = new Vector3[20];
+    edgeCenters = new Vector3[20];
     var r = verts[0].magnitude;// *0.75f / 0.95f;
     var e1 = r * Vector3.Normalize(verts[0] + verts[1] + verts[4]);
     var e2 = r * Vector3.Normalize(verts[0] + verts[1] + verts[2]);
@@ -66,51 +78,99 @@ public class MenuGenerator : MonoBehaviour
     EvenPermutations(new Vector3(x, -y), 9, edgeCenters);
     Negations3(e2, 12, edgeCenters);
 
-    for(int i = 0; i < edgeCenters.Length; i++)
+
+  }
+
+  public float magicSeven = 0;
+  public float magicThirty = 0;
+
+  private Quaternion FindZRotate(int i, Vector3 pos)
+  {
+    Quaternion zRotate = Quaternion.identity;
+    //I'm slightly ashamed of this next bit.
+    //I couldnt figure out a slick way of finding out the rotation of the hexagons.
+    //so I put labels on them and hand wrote the results.
+    if (i == 0 || i == 2 || i == 3 || i == 5 || i == 6 || i == 8 || i == 9 || i == 11)
+    {
+      zRotate = Quaternion.AngleAxis(magicThirty, pos);
+    }
+    if (i == 13 || i == 16 || i == 14 || i == 19)
+    {
+      //I don't really know why 7 works.
+      zRotate = Quaternion.AngleAxis(magicSeven, pos);
+    }
+    if (i == 12 || i == 17 || i == 15 || i == 18)
+    {
+      zRotate = Quaternion.AngleAxis(-magicSeven, pos);
+    }
+    return zRotate;
+  }
+  void PositionElements()
+  {
+    for (int i = 0; i < edgeCenters.Length; i++)
     {
       var pos = edgeCenters[i];
-      Quaternion quat = Quaternion.LookRotation(pos, new Vector3(0, 1, 0));
-      //I'm slightly ashamed of this next bit.
-      //I couldnt figure out a slick way of figuring out the rotation of the hexagons
-      if (i == 0 || i == 2 || i == 3 || i == 5 || i == 6 || i == 8 || i == 9 || i == 11) 
+
+      for (int j = 0; j < 3; j++)
       {
-        quat = Quaternion.AngleAxis(30f, pos) * quat;
+        float theta = ((float)j) * Mathf.PI * 2 / 3;
+        var posOffset = platesep * new Vector3(Mathf.Cos(theta), Mathf.Sin(theta));
+        posOffset =
+          Quaternion.FromToRotation(Vector3.forward, pos)
+          * FindZRotate(i, Vector3.forward)
+          * posOffset;
+        var finalPosition = Vector3.Normalize(5 * pos + posOffset) * 5;
+        var finalRotation =
+            FindZRotate(i, finalPosition)
+            * Quaternion.FromToRotation(Vector3.forward, finalPosition);
+
+        var go = items[i * 3 + j];
+        go.transform.localPosition = finalPosition;
+        go.transform.localRotation = finalRotation;
+
       }
-      if ( i == 13 || i == 16 || i == 14 || i == 19) 
-      {
-        quat = Quaternion.AngleAxis(7, pos) * quat;
-      }
-      if (i == 12 ||  i == 17 || i == 15 || i == 18 ) 
-      {
-        quat = Quaternion.AngleAxis(-7, pos) * quat;
-      }
-      var go = (GameObject)Instantiate(hexPrefab, pos * 2, 
-        quat);
-      go.GetComponentInChildren<UnityEngine.UI.Text>().text = i.ToString();
-      go.transform.SetParent(this.transform); 
+
     }
-    for(int i = 0; i < verts.Length; i++)
+  }
+
+  System.Collections.Generic.List<GameObject> items = new System.Collections.Generic.List<GameObject>();
+
+  void MakeElements()
+  {
+    for (int i = 0; i < edgeCenters.Length; i++)
+    {
+      var pos = edgeCenters[i];
+
+      for (int j = 0; j < 3; j++)
+      {
+        var go = (GameObject)Instantiate(hexPrefab, Vector3.zero, Quaternion.identity);
+        items.Add(go);
+        var behav = go.GetComponent<MenuBehaviour>();
+        behav.index = i * 3 + j;
+        go.transform.SetParent(this.transform);
+
+      }
+
+    }
+    for (int i = 0; i < verts.Length; i++)
     {
       var pos = verts[i];
-      Vector3 up = new Vector3(0,0,0);
-      switch (i%3)
+      Vector3 up = new Vector3(0, 0, 0);
+      switch (i % 3)
       {
         case 0: up = new Vector3(-pos.x, 0, 0); break;
         case 2: up = new Vector3(0, -pos.y, 0); break;
         case 1: up = new Vector3(0, 0, -pos.z); break;
       }
-      var quat = Quaternion.LookRotation(pos,up);
+      var quat = Quaternion.LookRotation(pos, up);
       var go = (GameObject)Instantiate(pentagonPrefab, pos * 2, quat);
       go.transform.SetParent(this.transform);
     }
-
-    //Debug.Log("made it ");
-
   }
 
   // Update is called once per frame
   void Update()
   {
-
+    PositionElements();
   }
 }
