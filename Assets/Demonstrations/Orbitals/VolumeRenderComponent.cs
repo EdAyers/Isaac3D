@@ -7,7 +7,7 @@ namespace Assets
   /// Causes the gameobject to be rendered as a volume rendering of a scalar field
   /// </summary>
   public class VolumeRenderComponent : MonoBehaviour
-  {
+  {         
 
     private int volumeTextureSize = 64;
 

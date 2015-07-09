@@ -33,9 +33,11 @@ using System.Text.RegularExpressions;
 //    frame.  This sends the texture containing the latest frame that Unity
 //    rendered into the Java vrtoolkit to be corrected for lens distortion and
 //    displayed on the device.
-public class Cardboard : MonoBehaviour {
+public class Cardboard : MonoBehaviour
+{
   // Distinguish the two stereo eyes.
-  public enum Eye {
+  public enum Eye
+  {
     Left,
     Right
   }
@@ -46,9 +48,12 @@ public class Cardboard : MonoBehaviour {
   // The singleton instance of the Cardboard class.
   private static Cardboard sdk = null;
 
-  public static Cardboard SDK {
-    get {
-      if (sdk == null) {
+  public static Cardboard SDK
+  {
+    get
+    {
+      if (sdk == null)
+      {
         Debug.Log("Creating SDK object");
         var go = new GameObject("Cardboard SDK", typeof(Cardboard));
         go.transform.localPosition = Vector3.zero;
@@ -62,9 +67,11 @@ public class Cardboard : MonoBehaviour {
   [HideInInspector]
   private bool vrModeEnabled = true;
 
-  public bool VRModeEnabled {
+  public bool VRModeEnabled
+  {
     get { return vrModeEnabled; }
-    set {
+    set
+    {
       vrModeEnabled = value;
     }
   }
@@ -75,10 +82,12 @@ public class Cardboard : MonoBehaviour {
 
   // Whether to draw the alignment marker. The marker is a vertical line that
   // splits the viewport in half, designed to help users align the screen with the Cardboard.
-  public bool EnableAlignmentMarker {
-      get { return enableAlignmentMarker; }
-      set {
-          enableAlignmentMarker = value;
+  public bool EnableAlignmentMarker
+  {
+    get { return enableAlignmentMarker; }
+    set
+    {
+      enableAlignmentMarker = value;
 #if ANDROID_DEVICE
           try {
               cardboardActivity.Call("setEnableAlignmentMarker", enableAlignmentMarker);
@@ -86,7 +95,7 @@ public class Cardboard : MonoBehaviour {
               Debug.LogError("Failed to SetEnableAlignmentMarker: " + e);
           }
 #endif
-      }
+    }
   }
 
   [SerializeField]
@@ -96,10 +105,12 @@ public class Cardboard : MonoBehaviour {
   // Whether to draw the settings button. The settings button opens the Google
   // Cardboard app to allow the user to  configure their individual settings and Cardboard
   // headset parameters
-  public bool EnableSettingsButton {
-      get { return enableSettingsButton; }
-      set {
-          enableSettingsButton = value;
+  public bool EnableSettingsButton
+  {
+    get { return enableSettingsButton; }
+    set
+    {
+      enableSettingsButton = value;
 #if ANDROID_DEVICE
           try {
               cardboardActivity.Call("setEnableSettingsButton", enableSettingsButton);
@@ -107,7 +118,7 @@ public class Cardboard : MonoBehaviour {
               Debug.LogError("Failed to SetEnableSettingsButton: " + e);
           }
 #endif
-      }
+    }
   }
 
   // Whether the device is in the Cardboard.
@@ -118,8 +129,9 @@ public class Cardboard : MonoBehaviour {
 
 #if UNITY_EDITOR
   // Helper for the custom editor script.
-  public void SetInCardboard(bool value) {
-      newInCardboard = value; // Takes effect at end of frame.
+  public void SetInCardboard(bool value)
+  {
+    newInCardboard = value; // Takes effect at end of frame.
   }
 #endif
 
@@ -131,10 +143,12 @@ public class Cardboard : MonoBehaviour {
   private bool newCardboardTriggered = false;
 
   // Whether screen taps are converted to Cardboard trigger events.
-  public bool TapIsTrigger {
-      get { return tapIsTrigger; }
-      set {
-          tapIsTrigger = value;
+  public bool TapIsTrigger
+  {
+    get { return tapIsTrigger; }
+    set
+    {
+      tapIsTrigger = value;
 #if ANDROID_DEVICE
           try {
               cardboardActivity.Call("setConvertTapIntoTrigger", tapIsTrigger);
@@ -142,7 +156,7 @@ public class Cardboard : MonoBehaviour {
               Debug.LogError("Failed to setConvertTapIntoTrigger: " + e);
           }
 #endif
-      }
+    }
   }
 
   [SerializeField]
@@ -157,24 +171,27 @@ public class Cardboard : MonoBehaviour {
   public Matrix4x4 HeadView { get { return headView; } }
 
   // The transformation from head to eye.
-  public Matrix4x4 EyeView(Cardboard.Eye eye) {
-      return eye == Cardboard.Eye.Left ? leftEyeView : rightEyeView;
+  public Matrix4x4 EyeView(Cardboard.Eye eye)
+  {
+    return eye == Cardboard.Eye.Left ? leftEyeView : rightEyeView;
   }
 
   // The projection matrix for a given eye.  This encodes the field of view,
   // IPD, and other parameters configured by the SDK.
-  public Matrix4x4 Projection(Cardboard.Eye eye) {
-      return eye == Cardboard.Eye.Left ? leftEyeProj : rightEyeProj;
+  public Matrix4x4 Projection(Cardboard.Eye eye)
+  {
+    return eye == Cardboard.Eye.Left ? leftEyeProj : rightEyeProj;
   }
 
   // Local transformation of head.
   public Quaternion HeadRotation { get; private set; }
 
   // Local transformations of eyes relative to head.
-  public Vector3 LeftEyeOffset  { get; private set; }
+  public Vector3 LeftEyeOffset { get; private set; }
   public Vector3 RightEyeOffset { get; private set; }
-  public Vector3 EyeOffset(Cardboard.Eye eye) {
-      return eye == Cardboard.Eye.Left ? LeftEyeOffset : RightEyeOffset;
+  public Vector3 EyeOffset(Cardboard.Eye eye)
+  {
+    return eye == Cardboard.Eye.Left ? LeftEyeOffset : RightEyeOffset;
   }
 
   // Minimum distance from the user that an object may be viewed in stereo
@@ -182,10 +199,12 @@ public class Cardboard : MonoBehaviour {
   // be scaled down if the "center of interest" is closer than this.  This
   // will set a lower limit on the disparity of the COI between the two eyes.
   // See CardboardEye.OnPreCull().
-  public float MinimumComfortDistance {
-      get {
-          return 1.0f;
-      }
+  public float MinimumComfortDistance
+  {
+    get
+    {
+      return 1.0f;
+    }
   }
 
   // Maximum distance from the user that an object may be viewed in
@@ -195,22 +214,25 @@ public class Cardboard : MonoBehaviour {
   // See CardboardEye.OnPreCull().
   // Note: For HMDs with optics that focus at infinity there really isn't a
   // maximum distance, so this number can be set to "really really big".
-  public float MaximumComfortDistance {
-      get {
-          return 100000f;  // i.e. really really big.
-      }
+  public float MaximumComfortDistance
+  {
+    get
+    {
+      return 100000f;  // i.e. really really big.
+    }
   }
 
-  public float IPD {
-      get { return NOMINAL_IPD; }
+  public float IPD
+  {
+    get { return NOMINAL_IPD; }
   }
 
 #if UNITY_IPHONE && !UNITY_EDITOR
   [DllImport("__Internal")]
 #else
-      [DllImport("RenderingPlugin")]
+  [DllImport("RenderingPlugin")]
 #endif
-      private static extern void InitFromUnity(int textureID);
+  private static extern void InitFromUnity(int textureID);
 
 #if ANDROID_DEVICE
   private const string cardboardClass =
@@ -230,68 +252,85 @@ public class Cardboard : MonoBehaviour {
 
   // Configures which Cardboard features are enabled, depending on
   // the Unity features available.
-  private class Config {
-      // Features.
-      public bool supportsRenderTextures;
-      public bool isAndroid;
-      public bool supportsAndroidRenderEvent;
-      public bool isAtLeastUnity4_5;
+  private class Config
+  {
+    // Features.
+    public bool supportsRenderTextures;
+    public bool isAndroid;
+    public bool supportsAndroidRenderEvent;
+    public bool isAtLeastUnity4_5;
 
-      // Access to plugin.
-      public bool canAccessActivity = false;
+    // Access to plugin.
+    public bool canAccessActivity = false;
 
-      // Should be called on main thread.
-      public void initialize() {
-          supportsRenderTextures = SystemInfo.supportsRenderTextures;
-          isAndroid = Application.platform == RuntimePlatform.Android;
-          try {
-              Regex r = new Regex(@"(\d+\.\d+)\..*");
-              string version = r.Replace(Application.unityVersion, "$1");
-              if (new Version(version) >= new Version("4.5")) {
-                  isAtLeastUnity4_5 = true;
-              }
-          } catch {
-              Debug.LogWarning("Unable to determine Unity version from: "
-                      + Application.unityVersion);
-          }
-          supportsAndroidRenderEvent = isAtLeastUnity4_5 && isAndroid;
+    // Should be called on main thread.
+    public void initialize()
+    {
+      supportsRenderTextures = SystemInfo.supportsRenderTextures;
+      isAndroid = Application.platform == RuntimePlatform.Android;
+      try
+      {
+        Regex r = new Regex(@"(\d+\.\d+)\..*");
+        string version = r.Replace(Application.unityVersion, "$1");
+        if (new Version(version) >= new Version("4.5"))
+        {
+          isAtLeastUnity4_5 = true;
+        }
       }
-
-      public bool canApplyDistortionCorrection() {
-          return supportsRenderTextures && supportsAndroidRenderEvent
-              && canAccessActivity;
+      catch
+      {
+        Debug.LogWarning("Unable to determine Unity version from: "
+                + Application.unityVersion);
       }
+      supportsAndroidRenderEvent = isAtLeastUnity4_5 && isAndroid;
+    }
 
-      public string getDistortionCorrectionDiagnostic() {
-          List<string> causes = new List<string>();
-          if (!isAndroid) {
-              causes.Add("Must be running on Android device");
-          } else if (!canAccessActivity) {
-              causes.Add("Cannot access UnityCardboardActivity. "
-                      + "Verify that the jar is in Assets/Plugins/Android");
-          }
-          if (!supportsRenderTextures) {
-              causes.Add("RenderTexture (Unity Pro feature) is unavailable");
-          }
-          if (!isAtLeastUnity4_5) {
-              causes.Add("Unity 4.5+ is needed for Android UnityPluginEvent");
-          }
-          return String.Join("; ", causes.ToArray());
+    public bool canApplyDistortionCorrection()
+    {
+      return supportsRenderTextures && supportsAndroidRenderEvent
+          && canAccessActivity;
+    }
+
+    public string getDistortionCorrectionDiagnostic()
+    {
+      List<string> causes = new List<string>();
+      if (!isAndroid)
+      {
+        causes.Add("Must be running on Android device");
       }
+      else if (!canAccessActivity)
+      {
+        causes.Add("Cannot access UnityCardboardActivity. "
+                + "Verify that the jar is in Assets/Plugins/Android");
+      }
+      if (!supportsRenderTextures)
+      {
+        causes.Add("RenderTexture (Unity Pro feature) is unavailable");
+      }
+      if (!isAtLeastUnity4_5)
+      {
+        causes.Add("Unity 4.5+ is needed for Android UnityPluginEvent");
+      }
+      return String.Join("; ", causes.ToArray());
+    }
   }
 
   private Config config = new Config();
 
-  void Awake() {
-      if (sdk == null) {
-          sdk = this;
-      } else {
-          Debug.LogWarning("Cardboard SDK object should be a singleton.");
-          enabled = false;
-      }
-      Screen.sleepTimeout = SleepTimeout.NeverSleep;
+  void Awake()
+  {
+    if (sdk == null)
+    {
+      sdk = this;
+    }
+    else
+    {
+      Debug.LogWarning("Cardboard SDK object should be a singleton.");
+      enabled = false;
+    }
+    Screen.sleepTimeout = SleepTimeout.NeverSleep;
 
-      config.initialize();
+    config.initialize();
 
 #if ANDROID_DEVICE
       try {
@@ -310,44 +349,56 @@ public class Cardboard : MonoBehaviour {
       TapIsTrigger = tapIsTrigger;
 #endif
 
-      if (config.canApplyDistortionCorrection()) {
-          Debug.Log("Creating new cardboard screen texture");
-          StereoScreen = new RenderTexture(Screen.width, Screen.height, 16,
-                                           RenderTextureFormat.RGB565);
-          StereoScreen.Create();
-          InitFromUnity(StereoScreen.GetNativeTextureID());
-      } else {
-          if (!Application.isEditor) {
-            Debug.LogWarning("Lens distortion-correction disabled. Causes: ["
-                             + config.getDistortionCorrectionDiagnostic() + "]");
-          }
+    if (config.canApplyDistortionCorrection())
+    {
+      Debug.Log("Creating new cardboard screen texture");
+      StereoScreen = new RenderTexture(Screen.width, Screen.height, 16,
+                                       RenderTextureFormat.RGB565);
+      StereoScreen.Create();
+      InitFromUnity(StereoScreen.GetNativeTextureID());
+    }
+    else
+    {
+      if (!Application.isEditor)
+      {
+        Debug.LogWarning("Lens distortion-correction disabled. Causes: ["
+                         + config.getDistortionCorrectionDiagnostic() + "]");
       }
+    }
 
-      InCardboard = newInCardboard = false;
+    InCardboard = newInCardboard = false;
 #if UNITY_EDITOR
-      if (VRModeEnabled && Application.isPlaying) {
-          SetInCardboard(true);
-      }
+    if (VRModeEnabled && Application.isPlaying)
+    {
+      SetInCardboard(true);
+    }
 #endif
-      StartCoroutine("EndOfFrame");
+    StartCoroutine("EndOfFrame");
   }
 
 #if UNITY_EDITOR
   private const float TAP_TIME_LIMIT = 0.2f;
   private float touchStartTime = 0;
 
-  void Update() {
-      if (!InCardboard) {
-          return;  // Only simulate trigger pull if there is a trigger to pull.
+  void Update()
+  {
+    if (!InCardboard)
+    {
+      return;  // Only simulate trigger pull if there is a trigger to pull.
+    }
+    if (Input.GetMouseButtonDown(0))
+    {
+      touchStartTime = Time.time;
+    }
+    else if (Input.GetMouseButtonUp(0))
+    {
+      if (Time.time - touchStartTime <= TAP_TIME_LIMIT)
+      {
+        newCardboardTriggered = true;
       }
-      if (Input.GetMouseButtonDown(0)) {
-          touchStartTime = Time.time;
-      } else if (Input.GetMouseButtonUp(0)) {
-          if (Time.time - touchStartTime <= TAP_TIME_LIMIT) {
-              newCardboardTriggered = true;
-          }
-          touchStartTime = 0;
-      }
+      touchStartTime = 0;
+    }
+
   }
 #endif
 
@@ -419,7 +470,7 @@ public class Cardboard : MonoBehaviour {
 
 #if UNITY_EDITOR
   [Tooltip("When playing in the editor, just release Ctrl to untilt the head.")]
-      public bool autoUntiltHead = true;
+  public bool autoUntiltHead = true;
 
   // Use mouse to emulate head in the editor.
   private float mouseX = 0;
@@ -428,63 +479,71 @@ public class Cardboard : MonoBehaviour {
 #endif
 
   // Mock implementation for use in the Unity editor.
-  public bool UpdateState() {
-      if (updated) {
-          return true;
-      }
+  public bool UpdateState()
+  {
+    if (updated)
+    {
+      return true;
+    }
 
-      // NOTE: View matrices have to be camera->world and use left-handed
-      // coordinates (+Z is forward).  See the flip/invert/flip code
-      // in the Android version of this function.
+    // NOTE: View matrices have to be camera->world and use left-handed
+    // coordinates (+Z is forward).  See the flip/invert/flip code
+    // in the Android version of this function.
 
-      headView = Matrix4x4.identity;
+    headView = Matrix4x4.identity;
 
 #if UNITY_EDITOR
-      bool rolled = false;
-      if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt)) {
-          mouseX += Input.GetAxis("Mouse X") * 5;
-          if (mouseX <= -180) {
-              mouseX += 360;
-          } else if (mouseX > 180)
-              mouseX -= 360;
-          mouseY -= Input.GetAxis("Mouse Y") * 2.4f;
-          mouseY = Mathf.Clamp(mouseY, -80, 80);
-      } else if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl)) {
-          rolled = true;
-          mouseZ += Input.GetAxis("Mouse X") * 5;
-          mouseZ = Mathf.Clamp(mouseZ, -80, 80);
+    bool rolled = false;
+    if (Input.GetKey(KeyCode.LeftAlt) || Input.GetKey(KeyCode.RightAlt))
+    {
+      mouseX += Input.GetAxis("Mouse X") * 5;
+      if (mouseX <= -180)
+      {
+        mouseX += 360;
       }
-      if (!rolled && autoUntiltHead) {
-          // People don't usually leave their heads tilted to one side for long.
-          mouseZ = Mathf.Lerp(mouseZ, 0, Time.deltaTime / (Time.deltaTime + 0.1f));
-      }
-      var rot = Quaternion.Euler(mouseY, mouseX, mouseZ);
-      headView = Matrix4x4.TRS(Vector3.zero, rot, Vector3.one);
+      else if (mouseX > 180)
+        mouseX -= 360;
+      mouseY -= Input.GetAxis("Mouse Y") * 2.4f;
+      mouseY = Mathf.Clamp(mouseY, -80, 80);
+    }
+    else if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+    {
+      rolled = true;
+      mouseZ += Input.GetAxis("Mouse X") * 5;
+      mouseZ = Mathf.Clamp(mouseZ, -80, 80);
+    }
+    if (!rolled && autoUntiltHead)
+    {
+      // People don't usually leave their heads tilted to one side for long.
+      mouseZ = Mathf.Lerp(mouseZ, 0, Time.deltaTime / (Time.deltaTime + 0.1f));
+    }
+    var rot = Quaternion.Euler(mouseY, mouseX, mouseZ);
+    headView = Matrix4x4.TRS(Vector3.zero, rot, Vector3.one);
 #endif
 
-      float eyeoffset = -IPD / 2;
+    float eyeoffset = -IPD / 2;
 
-      leftEyeView = Matrix4x4.identity;
-      leftEyeView[0, 3] = eyeoffset;
+    leftEyeView = Matrix4x4.identity;
+    leftEyeView[0, 3] = eyeoffset;
 
-      leftEyeProj = Matrix4x4.Perspective(mockFieldOfView,
-              0.5f * Screen.width / Screen.height,
-              1.0f, 1000.0f);
-      leftEyeProj[0, 2] = eyeoffset / zeroParallaxDistance * leftEyeProj[0, 0];
+    leftEyeProj = Matrix4x4.Perspective(mockFieldOfView,
+            0.5f * Screen.width / Screen.height,
+            1.0f, 1000.0f);
+    leftEyeProj[0, 2] = eyeoffset / zeroParallaxDistance * leftEyeProj[0, 0];
 
-      // Right matrices same as left ones but for some sign flippage.
-      rightEyeView = leftEyeView;
-      rightEyeView[0, 3] *= -1;
-      rightEyeProj = leftEyeProj;
-      rightEyeProj[0, 2] *= -1;
+    // Right matrices same as left ones but for some sign flippage.
+    rightEyeView = leftEyeView;
+    rightEyeView[0, 3] *= -1;
+    rightEyeProj = leftEyeProj;
+    rightEyeProj[0, 2] *= -1;
 
-      HeadRotation = Quaternion.LookRotation(headView.GetColumn(2),
-              headView.GetColumn(1));
-      LeftEyeOffset = leftEyeView.GetColumn(3);
-      RightEyeOffset = rightEyeView.GetColumn(3);
+    HeadRotation = Quaternion.LookRotation(headView.GetColumn(2),
+            headView.GetColumn(1));
+    LeftEyeOffset = leftEyeView.GetColumn(3);
+    RightEyeOffset = rightEyeView.GetColumn(3);
 
-      updated = true;
-      return true;
+    updated = true;
+    return true;
   }
 #endif
 
@@ -519,7 +578,8 @@ public class Cardboard : MonoBehaviour {
 #endif
 
   // Makes Unity see a mouse click (down + up) at the given pixel.
-  public void InjectMouseClick(int x, int y) {
+  public void InjectMouseClick(int x, int y)
+  {
 #if ANDROID_DEVICE
       if (downTime == NO_DOWNTIME) {  // If not in the middle of a tap injection.
           StartCoroutine(DoAndroidScreenTap(x, y));
@@ -528,10 +588,12 @@ public class Cardboard : MonoBehaviour {
   }
 
   // Makes Unity see a mouse move to the given pixel.
-  public void InjectMouseMove(int x, int y) {
-      if (x == (int)Input.mousePosition.x && y == (int)Input.mousePosition.y) {
-          return;  // Don't send a 0-pixel move.
-      }
+  public void InjectMouseMove(int x, int y)
+  {
+    if (x == (int)Input.mousePosition.x && y == (int)Input.mousePosition.y)
+    {
+      return;  // Don't send a 0-pixel move.
+    }
 #if ANDROID_DEVICE
       if (downTime == NO_DOWNTIME) {  // If not in the middle of a tap injection.
           try {
@@ -543,37 +605,45 @@ public class Cardboard : MonoBehaviour {
 #endif
   }
 
-  void OnInsertedIntoCardboardInternal() {
-      newInCardboard = true;
+  void OnInsertedIntoCardboardInternal()
+  {
+    newInCardboard = true;
   }
 
-  void OnRemovedFromCardboardInternal() {
-      newInCardboard = false;
+  void OnRemovedFromCardboardInternal()
+  {
+    newInCardboard = false;
   }
 
-  void OnCardboardTriggerInternal() {
-      newCardboardTriggered = true;
+  void OnCardboardTriggerInternal()
+  {
+    newCardboardTriggered = true;
   }
 
-  void OnDestroy() {
-      StopCoroutine("EndOfFrame");
-      if (sdk == this) {
-          sdk = null;
+  void OnDestroy()
+  {
+    StopCoroutine("EndOfFrame");
+    if (sdk == this)
+    {
+      sdk = null;
+    }
+  }
+
+  IEnumerator EndOfFrame()
+  {
+    while (true)
+    {
+      yield return new WaitForEndOfFrame();
+      if (vrModeEnabled && StereoScreen != null && UpdateState())
+      {
+        GL.InvalidateState();  // necessary for Windows, but not Mac.
+        GL.IssuePluginEvent(1);
       }
-  }
-
-  IEnumerator EndOfFrame() {
-      while (true) {
-          yield return new WaitForEndOfFrame();
-          if (vrModeEnabled && StereoScreen != null && UpdateState()) {
-              GL.InvalidateState();  // necessary for Windows, but not Mac.
-              GL.IssuePluginEvent(1);
-          }
-          InCardboard = newInCardboard;
-          CardboardTriggered = newCardboardTriggered;
-          newCardboardTriggered = false;
-          updated = false;
-      }
+      InCardboard = newInCardboard;
+      CardboardTriggered = newCardboardTriggered;
+      newCardboardTriggered = false;
+      updated = false;
+    }
   }
 
 #if !UNITY_EDITOR

@@ -52,6 +52,7 @@
      <Compile Include="Assets\Cardboard\Scripts\CardboardGUIMouse.cs" />
      <Compile Include="Assets\Cardboard\Scripts\CardboardGUIWindow.cs" />
      <Compile Include="Assets\Cardboard\Scripts\CardboardHead.cs" />
+     <Compile Include="Assets\Cardboard\Scripts\MenuHandler.cs" />
      <Compile Include="Assets\Cardboard\Scripts\SkyboxMesh.cs" />
      <Compile Include="Assets\Cardboard\Scripts\StereoController.cs" />
      <Compile Include="Assets\Cardboard\Scripts\StereoLensFlare.cs" />
