@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+///Code to handle going back when in a demo.
 public class MenuHandler : MonoBehaviour {
 
 	// Use this for initialization
@@ -10,7 +11,7 @@ public class MenuHandler : MonoBehaviour {
 
   float startTime;
   const float TIME_THRESHOLD = 0.1f;
-  const float POS_THRESHOLD = 0.1f;
+  const float POS_THRESHOLD = 0.2f;
   bool timing = false;
 
 	// Update is called once per frame
