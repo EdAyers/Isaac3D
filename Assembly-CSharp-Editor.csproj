@@ -51,6 +51,7 @@
      <None Include="Assets\Cardboard\Resources\SkyboxMesh.shader" />
      <None Include="Assets\Cardboard\Resources\GUIScreen.shader" />
      <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
+     <None Include="Assets\Plugins\Pixelplacement\iTween\ReadMe!\ReadMe!.txt" />
      <None Include="Assets\Demonstrations\Orbitals\VolumeShader.shader" />
  <Reference Include="UnityEngine.UI">
  <HintPath>E:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

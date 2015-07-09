@@ -19,7 +19,7 @@
 	<DebugType>full</DebugType>
 	<Optimize>false</Optimize>
 	<OutputPath>Temp\bin\Debug\</OutputPath>
-	<DefineConstants>DEBUG;TRACE;UNITY_4_6_1;UNITY_4_6;UNITY_ANDROID;ENABLE_MICROPHONE;ENABLE_TEXTUREID_MAP;ENABLE_UNITYEVENTS;ENABLE_NEW_HIERARCHY ;ENABLE_AUDIO_FMOD;ENABLE_MONO;ENABLE_TERRAIN;ENABLE_SUBSTANCE;ENABLE_GENERICS;INCLUDE_WP8SUPPORT;ENABLE_WWW;ENABLE_IMAGEEFFECTS;ENABLE_4_6_FEATURES;INCLUDE_WP_BLUE_SUPPORT;ENABLE_WEBCAM;INCLUDE_METROSUPPORT;RENDER_SOFTWARE_CURSOR;ENABLE_NETWORK;ENABLE_PHYSICS;ENABLE_CACHING;ENABLE_CLOTH;UNITY_ANDROID_API;ENABLE_2D_PHYSICS;ENABLE_SHADOWS;ENABLE_AUDIO;ENABLE_NAVMESH_CARVING;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_PROFILER;UNITY_EDITOR;UNITY_EDITOR_WIN</DefineConstants>
+	<DefineConstants>DEBUG;TRACE;UNITY_5_1_1;UNITY_5_1;UNITY_5;ENABLE_NEW_BUGREPORTER;ENABLE_2D_PHYSICS;ENABLE_4_6_FEATURES;ENABLE_AUDIO;ENABLE_CACHING;ENABLE_CLOTH;ENABLE_FRAME_DEBUGGER;ENABLE_GENERICS;ENABLE_HOME_SCREEN;ENABLE_IMAGEEFFECTS;ENABLE_LIGHT_PROBES_LEGACY;ENABLE_MICROPHONE;ENABLE_MULTIPLE_DISPLAYS;ENABLE_PHYSICS;ENABLE_PHYSICS_PHYSX3;ENABLE_PLUGIN_INSPECTOR;ENABLE_SHADOWS;ENABLE_SINGLE_INSTANCE_BUILD_SETTING;ENABLE_SPRITES;ENABLE_TERRAIN;ENABLE_UNET;ENABLE_UNITYEVENTS;ENABLE_VR;ENABLE_WEBCAM;ENABLE_WWW;ENABLE_CLOUD_SERVICES;ENABLE_CLOUD_SERVICES_ANALYTICS;ENABLE_CLOUD_SERVICES_UNET;ENABLE_CLOUD_LICENSE;ENABLE_AUDIOMIXER_SUSPEND;ENABLE_EDITOR_METRICS;INCLUDE_DYNAMIC_GI;INCLUDE_GI;INCLUDE_IL2CPP;INCLUDE_DIRECTX12;PLATFORM_SUPPORTS_MONO;RENDER_SOFTWARE_CURSOR;ENABLE_LOCALIZATION;UNITY_ANDROID;UNITY_ANDROID_API;ENABLE_SUBSTANCE;ENABLE_TEXTUREID_MAP;ENABLE_EGL;ENABLE_NETWORK;ENABLE_RUNTIME_GI;ENABLE_CRUNCH_TEXTURE_COMPRESSION;ENABLE_MONO;DEVELOPMENT_BUILD;ENABLE_PROFILER;DEBUG;TRACE;UNITY_ASSERTIONS;UNITY_EDITOR;UNITY_EDITOR_64;UNITY_EDITOR_WIN</DefineConstants>
 	<ErrorReport>prompt</ErrorReport>
 	<WarningLevel>4</WarningLevel>
 	<NoWarn>0169</NoWarn>
@@ -46,67 +46,26 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Plugins\Animator\Files\AnimatorData.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMAction.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMAnimationAction.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMAnimationKey.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMAnimationTrack.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMAudioAction.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMAudioKey.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMAudioTrack.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMCameraSwitcherAction.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMCameraSwitcherKey.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMCameraSwitcherTrack.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMEventAction.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMEventKey.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMEventParameter.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMEventTrack.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMGroup.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMKey.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMOrientationAction.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMOrientationKey.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMOrientationTrack.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMPath.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMPropertyAction.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMPropertyKey.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMPropertyTrack.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMRotationAction.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMRotationKey.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMRotationTrack.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMTake.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMTarget.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMTrack.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMTranslationAction.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMTranslationKey.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Classes\AMTranslationTrack.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Editor\AMCodeView.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Editor\AMEasePicker.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Editor\AMOptions.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Editor\AMOptionsFile.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Editor\AMPropertySelect.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Editor\AMSettings.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Editor\AMTakeExport.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Editor\AMTakeImport.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Editor\AMTimeline.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Editor\AMTransitionPicker.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Scripts\ClipboardHelper.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Scripts\ComboBox.cs" />
-     <Compile Include="Assets\Plugins\Animator\Files\Scripts\ObjectCopier.cs" />
-     <Compile Include="Assets\Plugins\Animator\Plugins\AMCameraFade.cs" />
-     <Compile Include="Assets\Plugins\Animator\Plugins\AMTween.cs" />
-     <Compile Include="Assets\Plugins\Animator\Plugins\AnimatorTimeline.cs" />
+     <Compile Include="Assets\Plugins\Pixelplacement\iTween\Sample\MoveSample.cs" />
+     <Compile Include="Assets\Plugins\Pixelplacement\iTween\Sample\RotateSample.cs" />
+     <Compile Include="Assets\Plugins\Pixelplacement\iTween\Sample\SampleInfo.cs" />
+     <Compile Include="Assets\Plugins\Pixelplacement\iTween\iTween.cs" />
      <None Include="Assets\Cardboard\Resources\SkyboxMesh.shader" />
-     <None Include="Assets\Plugins\Animator\Files\Resources\AMIrisShape.shader" />
-     <None Include="Assets\Standard Assets\Particles\Sources\Shaders\Particle Alpha Blend (Queue +100).shader" />
      <None Include="Assets\Cardboard\Resources\GUIScreen.shader" />
      <None Include="Assets\Plugins\Android\AndroidManifest.xml" />
-     <None Include="Assets\Plugins\Animator\changelog.txt" />
-     <None Include="Assets\Wavefunctions\Volume Rendering\VolumeShader.shader" />
+     <None Include="Assets\Plugins\Pixelplacement\iTween\ReadMe!\ReadMe!.txt" />
+     <None Include="Assets\Demonstrations\Orbitals\VolumeShader.shader" />
  <Reference Include="UnityEngine.UI">
- <HintPath>E:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/4.6.1/UnityEngine.UI.dll</HintPath>
+ <HintPath>E:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
- <Reference Include="JsonFx.Json">
- <HintPath>E:/Projects/Unity/CardboardWaveViewer/Assets/Plugins/Animator/Files/Scripts/JsonFx.Json.dll</HintPath>
+ <Reference Include="UnityEngine.Networking">
+ <HintPath>E:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Networking/UnityEngine.Networking.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEngine.Analytics">
+ <HintPath>E:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityAnalytics/UnityEngine.Analytics.dll</HintPath>
+ </Reference>
+ <Reference Include="UnityEditor.iOS.Extensions.Xcode">
+ <HintPath>E:/Program Files/Unity/Editor/Data/PlaybackEngines/iOSSupport/UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
  </Reference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
