@@ -12,7 +12,12 @@ public class MenuBehaviour : MonoBehaviour
   Cardboard cardboard;
   Collider collider;
   Camera camera;
+  Vector3 startPosition;
 
+  bool isSelected = false;
+
+  Color isaacColor;
+  Color selectColor;
   // Use this for initialization
   void Start()
   {
@@ -22,10 +27,14 @@ public class MenuBehaviour : MonoBehaviour
     cardboard = GameObject.Find("CardboardMain").GetComponent<Cardboard>();
     camera = cardboard.GetComponentInChildren<Camera>();
     collider = this.GetComponentInChildren<MeshCollider>();
+    startPosition = transform.position;
+    Color.TryParseHexString("44AA44FF", out isaacColor);
+    selectColor = Color.Lerp(isaacColor, Color.white, 0.3f);
   }
 
-  bool isSelected = false;
-
+  bool timing;
+  float startTime;
+  const float TIME_THR = 0.1f;
   // Update is called once per frame
   void Update()
   {
@@ -37,16 +46,63 @@ public class MenuBehaviour : MonoBehaviour
       {
         if (cardboard.CardboardTriggered)
         {
-            GetComponentInChildren<Text>().text = "LOADING...";
-            Application.LoadLevel(levelNo);
+          GetComponentInChildren<Text>().text = "LOADING...";
+          Application.LoadLevel(levelNo);
         }
         else
         {
-          isSelected = true;
+          SelectConditionsSatisfied();
         }
+        return;
       }
 
     }
+    DeselectConditionsSatisfied();
+  }
 
+  bool DelayAction(bool predicate)
+  {
+    if (predicate)
+    {
+      if (timing && (Time.time - startTime) > TIME_THR)
+      {
+        return true;
+      }
+      else if (!timing)
+      {
+        timing = true;
+        startTime = Time.time;
+        Debug.Log("startedTimer");
+        return false;
+      }
+      else
+      {
+        return false;
+      }
+    }
+    else
+    {
+      timing = false;
+      return false;
+    }
+  }
+
+  void SelectConditionsSatisfied()
+  {
+    if (DelayAction(!isSelected))
+    {
+      isSelected = true;
+      iTween.MoveBy(this.gameObject, Vector3.back * 2, 0.2f);
+      iTween.ColorTo(this.gameObject, selectColor, 0.2f);
+    }
+  }
+  void DeselectConditionsSatisfied()
+  {
+    if (DelayAction(isSelected))
+    {
+      isSelected = false;
+      iTween.MoveTo(this.gameObject, startPosition, 0.2f);
+      iTween.ColorTo(this.gameObject, isaacColor, 0.2f);
+    }
   }
 }
