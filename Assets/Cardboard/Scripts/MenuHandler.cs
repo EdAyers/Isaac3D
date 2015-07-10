@@ -60,7 +60,7 @@ public class MenuHandler : MonoBehaviour {
 
       if ((acc - Vector3.right).magnitude < POS_THRESHOLD)
       {
-        ringColor = new Color(1, 0, 0, 1);
+        ringColor = Color.Lerp(Color.red, Color.white, 0.5f);
         if (!timing)
         {
           startTime = Time.time;
