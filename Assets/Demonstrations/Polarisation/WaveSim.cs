@@ -9,12 +9,13 @@ namespace Assets
     public CMatrix2 CMatrix2;
     public float time = 0.0f;
     public float startAngle = 0.0f;
+    public bool advanceAngle = true;
     Waveplate waveplate;
 
     float initialX = -5.0f;
     float finalX = +5.0f;
     const int STEPS = 1000;
-    public float wavenumber = 20f;
+    public float wavenumber = 22.04f;
     float speedOfLight = 0.5f; 
 
     void Start()
@@ -63,7 +64,10 @@ namespace Assets
     void Update()
     {
       time += 0.1f;
-      startAngle += 0.001f;
+      if (advanceAngle)
+      {
+        startAngle += 0.001f;
+      }
     }
 
     // Will be called after all regular rendering is done

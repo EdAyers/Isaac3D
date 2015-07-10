@@ -48,12 +48,13 @@ public class MenuHandler : MonoBehaviour {
         canvas.enabled = true;
         backImage.enabled = true;
         backTargetImage.enabled = true;
+        float a = Mathf.Lerp(0, 1, (0.8f - dist) * 2);
         backTargetImage.color = new Color(
           ringColor.r, 
           ringColor.g, 
           ringColor.b, 
-          Mathf.Lerp(0, 1, (1 - dist) * 2));
-        backImage.color = new Color(1, 1, 1, Mathf.Lerp(0, 1, (0.8f - dist) * 2));
+          a);
+        backImage.color = new Color(1, 1, 1, a);
         backImage.transform.localPosition = new Vector3(acc.y, acc.z,0) * 5;
 
       }
