@@ -64,7 +64,6 @@
     <Compile Include="Assets\Demonstrations\Menu\MenuBehaviour.cs" />
     <Compile Include="Assets\Demonstrations\Menu\MenuGenerator.cs" />
     <Compile Include="Assets\Demonstrations\Orbitals\HydrogenCalc.cs" />
-    <Compile Include="Assets\Demonstrations\Orbitals\Teleport.cs" />
     <Compile Include="Assets\Demonstrations\Orbitals\VolumeRenderComponent.cs" />
     <Compile Include="Assets\Demonstrations\Polarisation\Complex.cs" />
     <Compile Include="Assets\Demonstrations\Polarisation\Lines.cs" />
