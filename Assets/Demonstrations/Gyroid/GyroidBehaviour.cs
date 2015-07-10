@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+///Code to handle changing the view of the camera in the gyroid demo.
 public class GyroidBehaviour : MonoBehaviour
 {
 

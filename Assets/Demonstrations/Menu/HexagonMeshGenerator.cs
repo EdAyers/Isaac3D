@@ -1,19 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+///Makes meshes for regular 2D polygons.
+///Attach this behaviour to an element, make the mesh and then use MeshSaver to save it to assets.
 public class HexagonMeshGenerator : MonoBehaviour {
-
   public int n = 6;
 	// Use this for initialization
 	void Start () {
-    
     var meshfilter = GetComponent<MeshFilter>() ;
     if (meshfilter == null)
     {
       return;
     }
-
-
     meshfilter.mesh = MakeNGon(n);
 	}
   Mesh MakeNGon(int n)
@@ -41,14 +39,9 @@ public class HexagonMeshGenerator : MonoBehaviour {
       triangles[j + 1] = i + 1;
       triangles[j + 2] = i + 2;
     }
-
     mesh.vertices = vertices;
     mesh.normals = normals;
     mesh.triangles = triangles;
     return mesh;
-  }	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+  }
 }

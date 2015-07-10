@@ -2,28 +2,31 @@
 using UnityEngine.UI;
 using System.Collections;
 
+///Script that handles the behaviour of a menu item.
+/// - animation when looking at it
+/// - load demo when tapped
 public class MenuBehaviour : MonoBehaviour
 {
-
   public int index = 0;
   public int levelNo = 0;
   Canvas canvas;
-
   Cardboard cardboard;
   Collider collider;
   Camera camera;
   Vector3 startPosition;
-
   bool isSelected = false;
-
   Color isaacColor;
   Color selectColor;
-  // Use this for initialization
+  bool timing;
+  float startTime;
+  const float TIME_THR = 0.1f;
+  
   void Start()
   {
-    //rotate the canvas to be pointing up
+    ////rotate the canvas to be pointing up
     //canvas = this.GetComponentInChildren<Canvas>();
     //canvas.transform.LookAt(transform.position * 3, new Vector3(0, 1, 0));
+
     cardboard = GameObject.Find("CardboardMain").GetComponent<Cardboard>();
     camera = cardboard.GetComponentInChildren<Camera>();
     collider = this.GetComponentInChildren<MeshCollider>();
@@ -31,14 +34,9 @@ public class MenuBehaviour : MonoBehaviour
     Color.TryParseHexString("44AA44FF", out isaacColor);
     selectColor = Color.Lerp(isaacColor, Color.white, 0.3f);
   }
-
-  bool timing;
-  float startTime;
-  const float TIME_THR = 0.1f;
-  // Update is called once per frame
+  
   void Update()
   {
-
     RaycastHit hit;
     if (Physics.Raycast(camera.transform.position, camera.transform.forward, out hit, 500))
     {
@@ -59,13 +57,16 @@ public class MenuBehaviour : MonoBehaviour
     }
     DeselectConditionsSatisfied();
   }
-
+  
+  ///Method that checks if predicate has been true
+  ///for over `TIME_THR` seconds.
   bool DelayAction(bool predicate)
   {
     if (predicate)
     {
       if (timing && (Time.time - startTime) > TIME_THR)
       {
+        timing = false;
         return true;
       }
       else if (!timing)
@@ -86,7 +87,7 @@ public class MenuBehaviour : MonoBehaviour
       return false;
     }
   }
-
+  
   void SelectConditionsSatisfied()
   {
     if (DelayAction(!isSelected))
@@ -96,6 +97,7 @@ public class MenuBehaviour : MonoBehaviour
       iTween.ColorTo(this.gameObject, selectColor, 0.2f);
     }
   }
+  
   void DeselectConditionsSatisfied()
   {
     if (DelayAction(isSelected))

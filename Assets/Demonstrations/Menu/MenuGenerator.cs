@@ -1,14 +1,24 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+///This code was over-ambitious; The idea was to find points of the
+///the face centers for the hexagons of a multiply truncated
+///iscosohedron. This would render as a globe of hexagons which the
+///viewer would be inside and be able to look around and click on menu items.
+///I've decided instead to manually place the hexagons because this was too much faff
+///for what it's worth.
 public class MenuGenerator : MonoBehaviour
 {
-
   public GameObject hexPrefab;
   public GameObject pentagonPrefab;
   public int layers = 5;
+  public float magicSeven = 0;
+  public float magicThirty = 0;
+  public float platesep;
 
-  // Use this for initialization
+  Vector3[] verts;
+  Vector3[] edgeCenters;
+
   void Start()
   {
     CreateGrid();
@@ -47,11 +57,6 @@ public class MenuGenerator : MonoBehaviour
   //speed over readability, functionality, dignity for
   //appropriate situations. I'm versatile!
 
-  public float platesep;
-
-  Vector3[] verts;
-  Vector3[] edgeCenters;
-
   void CreateGrid()
   {
     float d = Mathf.PI / 2 / (layers - 1);
@@ -81,9 +86,6 @@ public class MenuGenerator : MonoBehaviour
 
   }
 
-  public float magicSeven = 0;
-  public float magicThirty = 0;
-
   private Quaternion FindZRotate(int i, Vector3 pos)
   {
     Quaternion zRotate = Quaternion.identity;
@@ -105,6 +107,7 @@ public class MenuGenerator : MonoBehaviour
     }
     return zRotate;
   }
+
   void PositionElements()
   {
     for (int i = 0; i < edgeCenters.Length; i++)

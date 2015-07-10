@@ -1,4 +1,8 @@
-﻿
+﻿//modified from the orignal at
+//https://github.com/pharan/Unity-MeshSaver
+//Licence permits use and modification.
+//Cheers pharan!
+
 #if UNITY_EDITOR
 using UnityEditor;
 
@@ -6,6 +10,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
+///Editor script that takes a mesh and generates an asset.
 public static class MeshSaverEditor
 {
 
@@ -15,11 +20,6 @@ public static class MeshSaverEditor
     MeshFilter mf = menuCommand.context as MeshFilter;
     Mesh m = mf.sharedMesh;
     SaveMesh(m, m.name, false, true);
-  }
-
-  [MenuItem("CONTEXT/MeshFilter/Save Mesh As New Instance...")]
-  public static void SaveMeshNewInstanceItem(MenuCommand menuCommand)
-  {
   }
 
   [MenuItem("CONTEXT/MeshFilter/Invert and save...")]

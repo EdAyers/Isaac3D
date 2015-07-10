@@ -6,7 +6,14 @@ using UnityEngine;
 
 namespace Assets
 {
-
+  ///Class that calculates the wavefunction properties of a hydrogenic orbital
+  ///given the 3 quantum numbers. It is very likely that there is a mistake somewhere
+  ///in calculating values, especially in their normalisation and size, where extra scaling is added
+  ///ad-hoc to make the renderings have roughly consistent brightness and size.
+  ///The 'm' quantum number is abused somewhat because
+  ///the +m and -m wavefunctions are linearly combined to give real-valued wavefunctions to
+  ///align with what A-level students are used to.
+  ///The +m is mapped to the + linear combination and -m similarly.
   class HydrogenCalc
   {
     int n;
@@ -16,6 +23,9 @@ namespace Assets
     float harmonicFactor;
     float hydrogenFactor;
 
+    ///Value used to give a general order-of-magnitude
+    ///spatial size of the orbital so the renderer knows
+    ///how big it is.
     public double Size
     {
       get
@@ -24,6 +34,7 @@ namespace Assets
       }
     }
 
+    ///Spectroscopic label of the orbital. eg ("4s", "3d").
     public string OrbitalLabel
     {
       get
@@ -50,6 +61,7 @@ namespace Assets
       }
     }
 
+    ///Label usually written as a subscript indicating the m value
     public string MLabel
     {
       get
@@ -85,8 +97,8 @@ namespace Assets
       }
     }
 
-
-
+    ///Gives the number of nodes in azimuthal (phi) direction.
+    ///(doesn't include 
     public int AngularNodes { get { return Math.Abs(m); } }
     ///When we calculate the wavefunctions, we find the two real solutions
     ///by finding two linear combos of functions with the same |m| value.
@@ -192,6 +204,7 @@ namespace Assets
       return result;
     }
 
+    ///Calculates the wavefunction value at the given position.
     public Complex Wavefunction(float r, float theta, float phi)
     {
       float mag_Y = SphericalHarmonic(theta);
@@ -205,7 +218,7 @@ namespace Assets
     Polynomial legendrePol;
     LagPoly laguerrePol;
 
-    //For now just hard-code the first few legendre polynomials
+    //Hard-coded first few Legendre polynomials, almost certainly a mistake somewhere.
     float P00(float x) { return 1f; }
     float P01(float x) { return x; }
     float P11(float x) { return -Mathf.Sqrt(1 - x * x); }

@@ -4,11 +4,11 @@ using System;
 namespace Assets
 {
   /// <summary>
-  /// Causes the gameobject to be rendered as a volume rendering of a scalar field
+  /// Causes the gameobject to be rendered as a volume rendering of a scalar field.
+  /// Used to visualise the wavefunctions
   /// </summary>
   public class VolumeRenderComponent : MonoBehaviour
-  {         
-
+  {
     private int volumeTextureSize = 64;
 
     ///the range over which to evaluate the scalar field
@@ -21,38 +21,37 @@ namespace Assets
     private float fieldMinValue = -1.0F;
 
     HydrogenCalc[] calcs =
-  {
-    new HydrogenCalc(2,1,1),
-    new HydrogenCalc(2,1,0),
-    //new HydrogenCalc(2,1,-1),
-    //new HydrogenCalc(2,1,0), //creates weird dots at the origin
-    new HydrogenCalc(3,1,1),
-    //new HydrogenCalc(3,1,0),
-    //new HydrogenCalc(3,1,-1),
-    new HydrogenCalc(3,2,2),
-    new HydrogenCalc(3,2,1),
-    new HydrogenCalc(3,2,0),
-    //new HydrogenCalc(3,2,-1),
-    //new HydrogenCalc(3,2,-2),
+      {
+        new HydrogenCalc(2,1,1),
+        new HydrogenCalc(2,1,0),
+        //new HydrogenCalc(2,1,-1),
+        new HydrogenCalc(3,1,1),
+        //new HydrogenCalc(3,1,0),
+        //new HydrogenCalc(3,1,-1),
+        new HydrogenCalc(3,2,2),
+        new HydrogenCalc(3,2,1),
+        new HydrogenCalc(3,2,0),
+        //new HydrogenCalc(3,2,-1),
+        //new HydrogenCalc(3,2,-2),
 
-    //new HydrogenCalc(4,1,1),
-    //new HydrogenCalc(4,1,0),
-    //new HydrogenCalc(4,1,-1),
+        //new HydrogenCalc(4,1,1), //TODO these ones don't render correctly because the texture is not hi-fid enough.
+        //new HydrogenCalc(4,1,0), //so just don't include them and hope nobody notices.
+        //new HydrogenCalc(4,1,-1),
 
-    new HydrogenCalc(4,2,2),
-    new HydrogenCalc(4,2,1),
-    new HydrogenCalc(4,2,0),
-    //new HydrogenCalc(4,2,-1),
-    //new HydrogenCalc(4,2,-2),
+        new HydrogenCalc(4,2,2),
+        new HydrogenCalc(4,2,1),
+        new HydrogenCalc(4,2,0),
+        //new HydrogenCalc(4,2,-1),
+        //new HydrogenCalc(4,2,-2),
 
-    new HydrogenCalc(4,3, 3),
-    new HydrogenCalc(4,3, 2),
-    new HydrogenCalc(4,3, 1),
-    new HydrogenCalc(4,3, 0),
-    //new HydrogenCalc(4,3,-1),
-    //new HydrogenCalc(4,3,-2),
-    //new HydrogenCalc(4,3,-3)
-  };
+        new HydrogenCalc(4,3, 3),
+        new HydrogenCalc(4,3, 2),
+        new HydrogenCalc(4,3, 1),
+        new HydrogenCalc(4,3, 0),
+        //new HydrogenCalc(4,3,-1),
+        //new HydrogenCalc(4,3,-2),
+        //new HydrogenCalc(4,3,-3)
+      };
     int calcIndex = 0;
 
     private Texture2D fieldData;
@@ -120,6 +119,13 @@ namespace Assets
       mText.text = hydrogen.MLabel;
     }
 
+    ///Takes the current HydrogenCalc and generates a texture
+    ///for sending to the volume rendering shader.
+    ///The texture works by mapping values along the r and theta directions
+    ///to the U,V texture coordinates. The Phi component is calculated inside
+    ///the shader since its just multiplying by cos(phi).
+    ///This means we save memory and don't need to use Texture3D which
+    ///is not well supported.
     void GenerateSphereTextures()
     {
       fieldSize = (float)hydrogen.Size;

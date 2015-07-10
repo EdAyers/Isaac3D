@@ -2,7 +2,11 @@
 using System.Collections;
 using UnityEngine.UI;
 
-///Code to handle going back when in a demo.
+///Script to handle going back when in a demo.
+///Providing the requisite canvas with images is attached 
+///(comes in the Cardboard/Prefabs/CardboardMain prefab)
+///this displays a back GUI and will go back when the user
+///tilts the phone to be in the protrait orientation.
 public class MenuHandler : MonoBehaviour {
 
 	// Use this for initialization

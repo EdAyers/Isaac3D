@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
+///Script used to place many of the gyroid meshes next to each other.
 public class tesselate : MonoBehaviour
 {
 
