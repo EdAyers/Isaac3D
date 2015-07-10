@@ -3,17 +3,23 @@ using System.Collections;
 using System.Collections.Generic;
 namespace Assets
 {
-
-
   public class WaveSim : MonoBehaviour
   {
     static Material lineMaterial;
     public CMatrix2 CMatrix2;
-    // Use this for initialization
+    public float time = 0.0f;
+    public float startAngle = 0.0f;
+    Waveplate waveplate;
+
+    float initialX = -5.0f;
+    float finalX = +5.0f;
+    const int STEPS = 1000;
+    public float wavenumber = 20f;
+    float speedOfLight = 0.5f; 
+
     void Start()
     {
       Screen.sleepTimeout = SleepTimeout.NeverSleep;
-
 
       CMatrix2 = CMatrix2.QuarterWaveplate();
 
@@ -32,10 +38,8 @@ namespace Assets
 
       //add the line
       CreateLineMaterial();
-
-
-      //animate the line.
     }
+    
     static void CreateLineMaterial()
     {
       if (!lineMaterial)
@@ -61,16 +65,6 @@ namespace Assets
       time += 0.1f;
       startAngle += 0.001f;
     }
-
-    public float time = 0.0f;
-    public float startAngle = 0.0f;
-    Waveplate waveplate;
-
-    float initialX = -5.0f;
-    float finalX = +5.0f;
-    const int STEPS = 1000;
-    public float wavenumber = 20f;
-    float speedOfLight = 0.5f;
 
     // Will be called after all regular rendering is done
     public void OnRenderObject()

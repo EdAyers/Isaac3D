@@ -65,7 +65,6 @@
      <Compile Include="Assets\Demonstrations\Orbitals\HydrogenCalc.cs" />
      <Compile Include="Assets\Demonstrations\Orbitals\VolumeRenderComponent.cs" />
      <Compile Include="Assets\Demonstrations\Polarisation\Complex.cs" />
-     <Compile Include="Assets\Demonstrations\Polarisation\Lines.cs" />
      <Compile Include="Assets\Demonstrations\Polarisation\WaveSim.cs" />
      <Compile Include="Assets\Demonstrations\Polarisation\Waveplate.cs" />
      <None Include="Assets\Cardboard\Resources\SkyboxMesh.shader" />

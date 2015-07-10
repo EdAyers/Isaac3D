@@ -73,7 +73,6 @@ public class MenuBehaviour : MonoBehaviour
       {
         timing = true;
         startTime = Time.time;
-        Debug.Log("startedTimer");
         return false;
       }
       else

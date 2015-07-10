@@ -6,6 +6,7 @@ using UnityEngine;
 
 namespace Assets
 {
+  ///Implementation of complex numbers datatype.
   public struct Complex
   {
     public float real;
@@ -77,6 +78,7 @@ namespace Assets
     }
   }
 
+  ///Implementation of a 2x2 complex matrix.
   public struct CMatrix2
   {
     public Complex m00;
@@ -140,6 +142,7 @@ namespace Assets
     }
   }
 
+  ///Implementation of a complex 2 vector.
   public struct CVector2
   {
     public Complex X;
