@@ -30,6 +30,10 @@ namespace Assets
 
     private Cardboard cardboardMain;
 
+    public int n;
+    public int l;
+    public int m;
+    public bool useNLM = false;
 
     void Reset()
     {
@@ -52,6 +56,10 @@ namespace Assets
     // Use this for initialization
     void Start()
     {
+      if (useNLM)
+      {
+        SetFieldData(new HydrogenCalc(n, l, m));
+      }
     }
 
     // Update is called once per frame
