@@ -20,38 +20,6 @@ namespace Assets
     private float fieldMaxValue = 1.0F;
     private float fieldMinValue = -1.0F;
 
-    HydrogenCalc[] calcs =
-      {
-        new HydrogenCalc(2,1,1),
-        new HydrogenCalc(2,1,0),
-        //new HydrogenCalc(2,1,-1),
-        new HydrogenCalc(3,1,1),
-        //new HydrogenCalc(3,1,0),
-        //new HydrogenCalc(3,1,-1),
-        new HydrogenCalc(3,2,2),
-        new HydrogenCalc(3,2,1),
-        new HydrogenCalc(3,2,0),
-        //new HydrogenCalc(3,2,-1),
-        //new HydrogenCalc(3,2,-2),
-
-        //new HydrogenCalc(4,1,1), //TODO these ones don't render correctly because the texture is not hi-fid enough.
-        //new HydrogenCalc(4,1,0), //so just don't include them and hope nobody notices.
-        //new HydrogenCalc(4,1,-1),
-
-        new HydrogenCalc(4,2,2),
-        new HydrogenCalc(4,2,1),
-        new HydrogenCalc(4,2,0),
-        //new HydrogenCalc(4,2,-1),
-        //new HydrogenCalc(4,2,-2),
-
-        new HydrogenCalc(4,3, 3),
-        new HydrogenCalc(4,3, 2),
-        new HydrogenCalc(4,3, 1),
-        new HydrogenCalc(4,3, 0),
-        //new HydrogenCalc(4,3,-1),
-        //new HydrogenCalc(4,3,-2),
-        //new HydrogenCalc(4,3,-3)
-      };
     int calcIndex = 0;
 
     private Texture2D fieldData;
@@ -75,20 +43,13 @@ namespace Assets
       Screen.sleepTimeout = SleepTimeout.NeverSleep;
       orbitalText = GameObject.Find("OrbitalLabel").GetComponent<UnityEngine.UI.Text>();
       mText = GameObject.Find("MLabel").GetComponent<UnityEngine.UI.Text>();
-
-      hydrogen = calcs[0];
-
       if (volumeShader == null)
       {
         throw new Exception("expecting volumeShader to be set by unity");
       }
       volumeShaderMaterial = new Material(volumeShader);
-
       var MR = this.gameObject.AddComponent<MeshRenderer>();
       MR.material = volumeShaderMaterial;
-
-      RefreshFieldData();
-
       cardboardMain = GetComponentInChildren(typeof(Cardboard)) as Cardboard;
     }
 
@@ -100,17 +61,11 @@ namespace Assets
     // Update is called once per frame
     void Update()
     {
-      if (cardboardMain.CardboardTriggered)
-      {
-        calcIndex++;
-        if (calcIndex >= calcs.Length) calcIndex = 0;
-        hydrogen = calcs[calcIndex];
-        RefreshFieldData();
-      }
     }
 
-    void RefreshFieldData()
+    public void SetFieldData(HydrogenCalc calc)
     {
+      hydrogen = calc;
       GenerateSphereTextures();
       volumeShaderMaterial.SetTexture("fieldData", fieldData);
       volumeShaderMaterial.SetInt("angularNodes", hydrogen.AngularNodes);
@@ -128,6 +83,7 @@ namespace Assets
     ///is not well supported.
     void GenerateSphereTextures()
     {
+      if (hydrogen == null) return;
       fieldSize = (float)hydrogen.Size;
       var h = volumeTextureSize;
       var w = volumeTextureSize;

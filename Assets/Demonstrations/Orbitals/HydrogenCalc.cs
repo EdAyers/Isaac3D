@@ -14,7 +14,7 @@ namespace Assets
   ///the +m and -m wavefunctions are linearly combined to give real-valued wavefunctions to
   ///align with what A-level students are used to.
   ///The +m is mapped to the + linear combination and -m similarly.
-  class HydrogenCalc
+  public class HydrogenCalc
   {
     int n;
     int l;
