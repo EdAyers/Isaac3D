@@ -30,8 +30,6 @@ namespace Assets
 
     private Cardboard cardboardMain;
 
-    UnityEngine.UI.Text orbitalText;
-    UnityEngine.UI.Text mText;
 
     void Reset()
     {
@@ -41,8 +39,6 @@ namespace Assets
     void Awake()
     {
       Screen.sleepTimeout = SleepTimeout.NeverSleep;
-      orbitalText = GameObject.Find("OrbitalLabel").GetComponent<UnityEngine.UI.Text>();
-      mText = GameObject.Find("MLabel").GetComponent<UnityEngine.UI.Text>();
       if (volumeShader == null)
       {
         throw new Exception("expecting volumeShader to be set by unity");
@@ -70,8 +66,6 @@ namespace Assets
       volumeShaderMaterial.SetTexture("fieldData", fieldData);
       volumeShaderMaterial.SetInt("angularNodes", hydrogen.AngularNodes);
       volumeShaderMaterial.SetFloat("rotation", hydrogen.Rotation);
-      orbitalText.text = hydrogen.OrbitalLabel;
-      mText.text = hydrogen.MLabel;
     }
 
     ///Takes the current HydrogenCalc and generates a texture

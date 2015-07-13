@@ -9,6 +9,11 @@ public class OrbitalCycler : MonoBehaviour {
   VolumeRenderComponent vrc;
   Cardboard cardboardMain;
   int calcIndex = 0;
+
+
+  UnityEngine.UI.Text orbitalText;
+  UnityEngine.UI.Text mText;
+
   HydrogenCalc current;
   HydrogenCalc[] calcs =
       {
@@ -47,20 +52,30 @@ public class OrbitalCycler : MonoBehaviour {
 	void Start () {
     vrc = GetComponent<VolumeRenderComponent>();
     cardboardMain = GetComponentInChildren<Cardboard>();
-    current = calcs[calcIndex];
-    vrc.SetFieldData(current);
+    orbitalText = GameObject.Find("OrbitalLabel").GetComponent<UnityEngine.UI.Text>();
+    mText = GameObject.Find("MLabel").GetComponent<UnityEngine.UI.Text>();
+    RefreshData();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+    if (cardboardMain == null) return;
     if (cardboardMain.CardboardTriggered)
     {
       calcIndex++;
-      if (calcIndex >= calcs.Length) calcIndex = 0;
-      current = calcs[calcIndex];
-      vrc.SetFieldData(current);
+      RefreshData();
     }
 
 	}
+
+  void RefreshData()
+  {
+      current = calcs[calcIndex];
+      vrc.SetFieldData(current);
+      if (orbitalText != null && mText != null)
+      {
+        orbitalText.text = current.OrbitalLabel;
+        mText.text = current.MLabel;
+      }      
+  }
 }
