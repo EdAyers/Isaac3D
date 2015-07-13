@@ -11,6 +11,9 @@ namespace Assets
     public float startAngle = 0.0f;
     public bool advanceAngle = true;
     Waveplate waveplate;
+    Waveplate polariser;
+    public float lightSourcePosition;
+    public float polariserPosition;
 
     float initialX = -5.0f;
     float finalX = +5.0f;
@@ -78,10 +81,6 @@ namespace Assets
       // Apply the line material
       lineMaterial.SetPass(0);
 
-      //GL.PushMatrix();
-      // Set transformation matrix for drawing to
-      // match our transform
-      //GL.MultMatrix(transform.localToWorldMatrix);
 
       // Draw lines
       GL.Begin(GL.LINES);
@@ -139,7 +138,6 @@ namespace Assets
       }
 
       GL.End();
-      //GL.PopMatrix();
     }
   }
 }
