@@ -53,6 +53,12 @@ namespace Assets
       cardboardMain = GetComponentInChildren(typeof(Cardboard)) as Cardboard;
     }
 
+    public void SetRotation(float angle)
+    {
+      volumeShaderMaterial.SetFloat("rotation", angle);
+
+    }
+
     // Use this for initialization
     void Start()
     {
