@@ -63,6 +63,7 @@ public class OrbitalCycler : MonoBehaviour {
     if (cardboardMain.CardboardTriggered)
     {
       calcIndex++;
+      if (calcIndex >= calcs.Length) { calcIndex = 0; }
       RefreshData();
     }
 
