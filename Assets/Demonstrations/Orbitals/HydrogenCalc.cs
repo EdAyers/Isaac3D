@@ -246,11 +246,14 @@ namespace Assets
     ///Used for implementation of ILevelFunc
     public float F(Vector3 v)
     {
+      if (n != 1 && l == 0 && v.z < 0) return 0;
+
       var r = v.magnitude * Size;
       var rho = Mathf.Sqrt(v.x * v.x + v.z * v.z);
       var theta = Mathf.Atan2(rho, v.y);
       var phi = Mathf.Atan2(v.z, v.x);
-      return Wavefunction(r, theta, phi).MagSquared;
+      float result = Wavefunction(r, theta, phi).MagSquared;
+      return result;
     }
 
     public float GetLevelSetValue(float requiredIntegration)

@@ -10,6 +10,7 @@ public class Rotator : MonoBehaviour {
 	}
   VolumeRenderComponent vrc;
   public bool isRotating = true;
+
   public float speed = 1f;
   float angle = 0;
 	// Update is called once per frame

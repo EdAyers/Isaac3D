@@ -19,12 +19,11 @@ class SphereLevel : ILevelFunc
   }
 }
 
-
 public class LevelSetMeshGenerator : MonoBehaviour
 {
   ILevelFunc func;
-  public float level = 0.5f;
-  const int SAMPLES = 70;
+  float level = 0.5f;
+  const int SAMPLES = 60;
 
   public float min = -1;
   public float max = 1;
@@ -180,12 +179,7 @@ public class LevelSetMeshGenerator : MonoBehaviour
     while (e.MoveNext())
     {
       var cube = e.Current.Value;
-      if (cube.points.Count < 3)
-      {
-        Debug.Log("found a cube with points length of " + cube.points.Count);
-
-      }
-      else
+      if (cube.points.Count >= 3)
       {
         //sort the points into a clockwise order
         Vector3 mean = Vector3.zero;
@@ -242,10 +236,8 @@ public class LevelSetMeshGenerator : MonoBehaviour
   void Start()
   {
     mf = GetComponent<MeshFilter>();
-    var calc = new HydrogenCalc(4, 2, 1);
+    var calc = new HydrogenCalc(3, 0, 0);
     level = calc.GetLevelSetValue(0.5f);
-    //max = 10;
-    //min = -10;
     func = calc;
     mf.mesh = Gen();
   }
@@ -253,6 +245,6 @@ public class LevelSetMeshGenerator : MonoBehaviour
   // Update is called once per frame
   void Update()
   {
-    //mf.mesh = Gen();
+
   }
 }
