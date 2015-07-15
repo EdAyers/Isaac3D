@@ -236,7 +236,7 @@ public class LevelSetMeshGenerator : MonoBehaviour
   void Start()
   {
     mf = GetComponent<MeshFilter>();
-    var calc = new HydrogenCalc(3, 0, 0);
+    var calc = new HydrogenCalc(2, 0, 0);
     level = calc.GetLevelSetValue(0.5f);
     func = calc;
     mf.mesh = Gen();
