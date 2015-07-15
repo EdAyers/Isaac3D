@@ -45,7 +45,13 @@ namespace Assets
     {
       get { return Mathf.Atan2(I, R); }
     }
-
+    public float MagSquared
+    {
+      get
+      {
+        return R * R + I * I;
+      }
+    }
     static public Complex operator *(Complex a, Complex b)
     {
       return new Complex(a.R * b.R - a.I * b.I, a.R * b.I + a.I * b.R);
@@ -75,6 +81,10 @@ namespace Assets
     static public Complex Zero()
     {
       return new Complex(0, 0);
+    }
+    static public Complex FromMagArg(float mag, float arg)
+    {
+      return mag * Complex.Rotate(arg);
     }
   }
 

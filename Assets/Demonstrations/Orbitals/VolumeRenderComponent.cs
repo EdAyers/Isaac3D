@@ -56,7 +56,6 @@ namespace Assets
     public void SetRotation(float angle)
     {
       volumeShaderMaterial.SetFloat("rotation", angle);
-
     }
 
     // Use this for initialization

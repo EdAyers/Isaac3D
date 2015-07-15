@@ -1,20 +1,33 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System;
+using Assets;
 
 interface ILevelFunc
 {
   float F(Vector3 v);
 }
 
-class LevelSetGen
+class SphereLevel : ILevelFunc
+{
+  public float F(Vector3 v)
+  {
+      var r = v.magnitude;
+      return r;
+  }
+}
+
+
+public class LevelSetMeshGenerator : MonoBehaviour
 {
   ILevelFunc func;
-  float level;
-  const int SAMPLES = 1000;
+  public float level = 0.5f;
+  const int SAMPLES = 70;
 
-  float min;
-  float max;
+  public float min = -1;
+  public float max = 1;
 
   struct Point
   {
@@ -28,16 +41,21 @@ class LevelSetGen
     public int j;
     public int k;
     public List<Point> points;
-    public int ID
+    public int Key
     {
       get
       {
-        return Cube.Index(i, j, k);
+        return Cube.CalcKey(i, j, k);
       }
     }
-    public static int Index(int i, int j, int k)
+    public static int CalcKey(int i, int j, int k)
     {
       return (i * SAMPLES * SAMPLES + j * SAMPLES + k);
+    }
+    public Cube(int i, int j, int k)
+    {
+      this.i = i; this.j = j; this.k = k;
+      this.points = new List<Point>();
     }
   }
   Vector3 Pos(int i, int j, int k)
@@ -50,86 +68,102 @@ class LevelSetGen
   enum Dir { X, Y, Z }
   Dictionary<int, Cube> cubes;
   List<Point> points;
+  Cube GetOrNewCube(int i, int j, int k)
+  {
+    if (i < 0 || i >= SAMPLES) return null;
+    if (j < 0 || j >= SAMPLES) return null;
+    if (k < 0 || k >= SAMPLES) return null;
+    int key = Cube.CalcKey(i, j, k);
+    Cube cube;
+    if (cubes.TryGetValue(key, out cube))
+    {
+      return cube;
+    }
+    else
+    {
+      cube = new Cube(i, j, k);
+      cubes.Add(key, cube);
+      return cube;
+    }
+  }
+  void AddAPointToCube(int i, int j, int k, Point point)
+  {
+    var cube = GetOrNewCube(i, j, k);
+    if (cube != null)
+    {
+      cube.points.Add(point);
+    }
+  }
+  
+  Vector3 Normal(Vector3 pos)
+  {
+    float delta = (max - min) / SAMPLES * 2;
+    float x = func.F(pos + Vector3.right * delta) 
+      - func.F(pos - Vector3.right * delta);
+    float y = func.F(pos + Vector3.up * delta) 
+      - func.F(pos - Vector3.up * delta);
+    float z = func.F(pos + Vector3.forward * delta) 
+      - func.F(pos - Vector3.forward * delta);
+    return new Vector3(x, y, z).normalized;
+  }
   void EdgeCalc(Vector3 v0, Vector3 v1, Dir dir, int i, int j, int k)
   {
     var f1 = func.F(v1);
     var f0 = func.F(v0);
-    if (    (f1 > level && f0 < level)
+    if ((f1 > level && f0 < level)
          || (f1 < level && f0 > level))
     {
       //surface intersects this cube.
+      var pos = Vector3.Lerp(v0, v1, Mathf.Abs(level - f0) / Mathf.Abs(f1 - f0));
+      var norm = Normal(pos);
       Point p = new Point()
       {
-        position = Vector3.Lerp(v0, v1, Mathf.Abs(level - f0) / Mathf.Abs(f1 - f0)),
-        up = (v1 - v0),
+        position = pos,
+        up = norm,
         ID = points.Count
       };
-      Cube c = new Cube()
-      {
-        i = i,
-        j = j,
-        k = k,
-        points = new List<Point>()
-      };
+      Cube c = GetOrNewCube(i, j, k);
       c.points.Add(p);
       points.Add(p);
-      cubes.Add(c.ID, c);
       //match up other 3 cubes
       if (dir == Dir.X)
       {
-        if (k > 0)
-        {
-          cubes[Cube.Index(i, j, k - 1)].points.Add(p);
-        }
-        if (j > 0)
-        {
-          cubes[Cube.Index(i, j - 1, k)].points.Add(p);
-        }
-        if (j > 0 && k > 0)
-        {
-          cubes[Cube.Index(i, j - 1, k - 1)].points.Add(p);
-        }
+        AddAPointToCube(i, j, k - 1, p);
+        AddAPointToCube(i, j - 1, k - 1, p);
+        AddAPointToCube(i, j - 1, k, p);
       }
-      if (dir == Dir.Y)
+      else if (dir == Dir.Y)
       {
-        if (k > 0)
-        {
-          cubes[Cube.Index(i, j, k - 1)].points.Add(p);
-        }
-        if (i > 0)
-        {
-          cubes[Cube.Index(i - 1, j, k)].points.Add(p);
-        }
-        if (i > 0 && k > 0)
-        {
-          cubes[Cube.Index(i - 1, j, k - 1)].points.Add(p);
-        }
-      } 
-      if (dir == Dir.Z)
+        AddAPointToCube(i - 1, j, k, p);
+        AddAPointToCube(i - 1, j, k - 1, p);
+        AddAPointToCube(i, j, k - 1, p);
+      }
+      else if (dir == Dir.Z)
       {
-        if (i > 0)
-        {
-          cubes[Cube.Index(i- 1, j, k )].points.Add(p);
-        }
-        if (j > 0)
-        {
-          cubes[Cube.Index(i, j - 1, k)].points.Add(p);
-        }
-        if (j > 0 && i > 0)
-        {
-          cubes[Cube.Index(i - 1, j - 1, k)].points.Add(p);
-        }
+        AddAPointToCube(i - 1, j, k, p);
+        AddAPointToCube(i - 1, j - 1, k, p);
+        AddAPointToCube(i, j - 1, k, p);
+
       }
     }
+  }
+  float AngleAbout(Vector3 axis, Vector3 startPos, Vector3 x)
+  {
+    var a = axis.normalized;
+    var projStart = Vector3.ProjectOnPlane(startPos, a);
+    var projX = Vector3.ProjectOnPlane(x, a);
+    float c = Vector3.Dot(projStart, projX);
+    float s = Vector3.Dot(Vector3.Cross(projStart, projX), a);
+    return Mathf.Atan2(s, c);
   }
   Mesh Gen()
   {
     cubes = new Dictionary<int, Cube>();
     points = new List<Point>();
     float d = (max - min) / SAMPLES;
-    for (int i = 0; i < SAMPLES; i++)
-      for (int j = 0; j < SAMPLES; j++)
-        for (int k = 0; k < SAMPLES; k++)
+      for (int i = 0; i < SAMPLES; i++)
+        for (int j = 0; j < SAMPLES; j++)
+          for (int k = 0; k < SAMPLES; k++)
         {
           var v0 = Pos(i, j, k);
           var vx = Pos(i + 1, j, k);
@@ -142,94 +176,83 @@ class LevelSetGen
 
     List<int> triangles = new List<int>();
     var e = cubes.GetEnumerator();
-    
+
     while (e.MoveNext())
     {
-      //generate triangles
       var cube = e.Current.Value;
-      if (cube.points.Count == 3)
+      if (cube.points.Count < 3)
       {
-        var a = cube.points[0].position;
-        var b = cube.points[1].position;
-        var c = cube.points[2].position;
-        //integers need to be provided clockwise looking onto face.
-        var normal = Vector3.Cross(b - a, c - a);
-        if (Vector3.Angle(normal, cube.points[0].up) < 90)
-        {
-          triangles.Add(cube.points[0].ID);
-          triangles.Add(cube.points[1].ID);
-          triangles.Add(cube.points[2].ID);
-        }
-        else
-        {
-          triangles.Add(cube.points[0].ID);
-          triangles.Add(cube.points[2].ID);
-          triangles.Add(cube.points[1].ID);
-        }
-      }
-      if (cube.points.Count == 4)
-      {
-        //we assume that the surface in cube is close enough to
-        //a euclidian plane that we can just consider one triangle
-        var a = cube.points[0].position;
-        var b = cube.points[1].position;
-        var c = cube.points[2].position;
-        //integers need to be provided clockwise looking onto face.
-        var normal = Vector3.Cross(b - a, c - a);
-        if (Vector3.Angle(normal, cube.points[0].up) < 90)
-        {
-          triangles.Add(cube.points[0].ID);
-          triangles.Add(cube.points[1].ID);
-          triangles.Add(cube.points[2].ID);
+        Debug.Log("found a cube with points length of " + cube.points.Count);
 
-          triangles.Add(cube.points[0].ID);
-          triangles.Add(cube.points[2].ID);
-          triangles.Add(cube.points[3].ID);
-        }
-        else
-        {
-          triangles.Add(cube.points[0].ID);
-          triangles.Add(cube.points[2].ID);
-          triangles.Add(cube.points[1].ID);
-
-          triangles.Add(cube.points[0].ID);
-          triangles.Add(cube.points[3].ID);
-          triangles.Add(cube.points[2].ID);
-        }
       }
       else
       {
-        Debug.Log("found a cube with points length of " + cube.points.Count);
+        //sort the points into a clockwise order
+        Vector3 mean = Vector3.zero;
+        Vector3 normal = Vector3.zero;
+        
+        foreach (Point p in cube.points)
+        {
+          mean += (p.position / cube.points.Count);
+          normal += p.up;
+        }
+        var a = cube.points[0].position - mean;
+        bool rev = false;
+        var ordered = cube.points.OrderBy(x =>
+               AngleAbout(normal, a, x.position - mean)
+          ).Select(x => x.ID).ToArray();
+        for (int n = 0; n < cube.points.Count - 2; n++)
+        {
+          if (rev)
+          {
+            triangles.Add(ordered[0]);
+            triangles.Add(ordered[n + 1]);
+            triangles.Add(ordered[n + 2]);
+          }
+          else
+          {
+            triangles.Add(ordered[n + 1]);
+            triangles.Add(ordered[0]);
+            triangles.Add(ordered[n + 2]);
+          }
+        }
       }
     }
 
     Vector3[] vertices = new Vector3[points.Count];
-    for(int i = 0; i < points.Count; i++)
+    Vector3[] normals = new Vector3[points.Count];
+    for (int i = 0; i < points.Count; i++)
     {
       vertices[i] = points[i].position;
+      normals[i] =  points[i].up;
     }
     var tris = triangles.ToArray();
     Mesh mesh = new Mesh();
-    mesh.triangles = tris;
     mesh.vertices = vertices;
+    mesh.normals = normals;
+    mesh.triangles = tris;
+    //mesh.RecalculateNormals();
+    mesh.Optimize();
+    Debug.Log(vertices.Length);
     return mesh;
   }
 
-}
-
-
-public class LevelSetMeshGenerator : MonoBehaviour
-{
-
+  MeshFilter mf;
   // Use this for initialization
   void Start()
   {
-
+    mf = GetComponent<MeshFilter>();
+    var calc = new HydrogenCalc(4, 2, 1);
+    level = calc.GetLevelSetValue(0.5f);
+    //max = 10;
+    //min = -10;
+    func = calc;
+    mf.mesh = Gen();
   }
 
   // Update is called once per frame
   void Update()
   {
-
+    //mf.mesh = Gen();
   }
 }

@@ -14,7 +14,7 @@ namespace Assets
   ///the +m and -m wavefunctions are linearly combined to give real-valued wavefunctions to
   ///align with what A-level students are used to.
   ///The +m is mapped to the + linear combination and -m similarly.
-  public class HydrogenCalc
+  public class HydrogenCalc : ILevelFunc
   {
     int n;
     int l;
@@ -26,11 +26,11 @@ namespace Assets
     ///Value used to give a general order-of-magnitude
     ///spatial size of the orbital so the renderer knows
     ///how big it is.
-    public double Size
+    public float Size
     {
       get
       {
-        return Math.Pow(2, n) * 3;
+        return Mathf.Pow(2, n) * 3;
       }
     }
 
@@ -210,7 +210,8 @@ namespace Assets
       float mag_Y = SphericalHarmonic(theta);
       float mag = mag_Y * RadialComponent(r);
       float phase = phi * m;
-      return Complex.FromRI(mag, phase);
+      mag *= Mathf.Cos(phase);
+      return Complex.FromMagArg(mag, 0);
     }
 
     delegate float Polynomial(float x);
@@ -241,5 +242,79 @@ namespace Assets
     float L1(float x, int k) { return 1 - x + k; }
     float L2(float x, int k) { return 0.5f * (x * x - 2 * (k + 1) * x + (k + 1) * (k + 2)); }
     float L3(float x, int k) { return 1 / 6f * (-x * x * x + 3 * (k + 3) * x * x - 3 * (k + 2) * (k + 3) * x + (k + 3) * (k + 2) * (k + 1)); }
+
+    ///Used for implementation of ILevelFunc
+    public float F(Vector3 v)
+    {
+      var r = v.magnitude * Size;
+      var rho = Mathf.Sqrt(v.x * v.x + v.z * v.z);
+      var theta = Mathf.Atan2(rho, v.y);
+      var phi = Mathf.Atan2(v.z, v.x);
+      return Wavefunction(r, theta, phi).MagSquared;
+    }
+
+    public float GetLevelSetValue(float requiredIntegration)
+    {
+      //check the integration range
+      const int STEPS = 30;
+      float range = Size / 16;
+
+      float start = - range / 2;
+      var startV = new Vector3(start, start, start);
+      float delta = range / STEPS;
+      float testValue = 1;
+
+      float maxTotal = Integrate(STEPS, startV, delta, 0);
+      Debug.Log("maxtotal = " + maxTotal.ToString());
+
+      StringBuilder sb = new StringBuilder();
+      for (int n = 0; n < STEPS; n++)
+      {
+        var pos = startV + new Vector3(n, n, n) * delta;
+        float val = F(pos);
+        sb.Append(val);
+        sb.Append(" ; ");
+      }
+      Debug.Log(sb);
+
+      for (int n = 0; n < 20; n++)
+      {
+
+
+        float total = Integrate(STEPS, startV, delta, testValue);
+        total /= maxTotal;
+
+        if (Mathf.Abs(total - requiredIntegration) < 0.01f) { break; }
+        else if (total < requiredIntegration)
+        {
+          testValue -= Mathf.Pow(2, - 1 - n);
+        }
+        else
+        {
+          testValue += Mathf.Pow(2, -1 - n);
+        }
+        Debug.Log("test value = " + testValue.ToString());
+        Debug.Log("total = " + total.ToString());
+      }
+      
+      return testValue;
+    }
+
+    private float Integrate(int STEPS, Vector3 startV, float delta, float testValue)
+    {
+      float total = 0;
+      for (int i = 0; i < STEPS; i++)
+        for (int j = 0; j < STEPS; j++)
+          for (int k = 0; k < STEPS; k++)
+          {
+            var pos = startV + new Vector3(i, j, k) * delta;
+            float val = F(pos);
+            if (val > testValue)
+            {
+              total += val * Mathf.Pow(delta, 3);
+            }
+          }
+      return total;
+    }
   }
 }
