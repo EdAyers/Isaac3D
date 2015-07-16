@@ -9,6 +9,7 @@ public class MenuBehaviour : MonoBehaviour
 {
   public int index = 0;
   public int levelNo = 0;
+  public float selectDistance = 1.2f;
   Canvas canvas;
   Cardboard cardboard;
   Collider collider;
@@ -16,7 +17,7 @@ public class MenuBehaviour : MonoBehaviour
   Vector3 startPosition;
   bool isSelected = false;
   Color isaacColor;
-  Color selectColor;
+  public Color selectColor;
   bool timing;
   float startTime;
   const float TIME_THR = 0.1f;
@@ -92,7 +93,7 @@ public class MenuBehaviour : MonoBehaviour
     if (DelayAction(!isSelected))
     {
       isSelected = true;
-      iTween.MoveBy(this.gameObject, Vector3.back * 2, 0.2f);
+      iTween.MoveBy(this.gameObject, Vector3.back * selectDistance, 0.2f);
       iTween.ColorTo(this.gameObject, selectColor, 0.2f);
     }
   }

@@ -67,6 +67,8 @@ public class Cardboard : MonoBehaviour
   [HideInInspector]
   private bool vrModeEnabled = true;
 
+  public bool alwaysStartFacingThisWay = false;
+
   public bool VRModeEnabled
   {
     get { return vrModeEnabled; }

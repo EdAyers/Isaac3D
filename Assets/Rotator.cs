@@ -21,7 +21,7 @@ public class Rotator : MonoBehaviour {
       float delta = Time.deltaTime * speed;
       if (vrc == null)
       {
-        this.transform.Rotate(Vector3.up, delta);
+        this.transform.Rotate(Vector3.up, delta, Space.Self);
       }
       else
       {

@@ -319,5 +319,24 @@ namespace Assets
           }
       return total;
     }
+
+    Mesh mesh;
+    public Mesh GetMesh()
+    {
+      if (mesh == null)
+      {
+        var sb = new StringBuilder();
+        sb.Append("Mesh");
+        sb.Append(n);
+        sb.Append(l);
+        sb.Append(Math.Abs(m));
+        //sb.Append(".asset");
+        Debug.Log(sb.ToString());
+        mesh = Resources.Load<Mesh>(sb.ToString());
+        if (mesh == null) Debug.LogError("FAILED TO LOAD MESH FROM ASSETS, BLAST.");
+      }
+
+      return mesh;
+    }
   }
 }

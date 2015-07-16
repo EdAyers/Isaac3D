@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Assets;
+using System.Text;
 
 ///Script that sends new Calcs to the VolumeRenderComponent on the
 ///game object on tapping the trigger.
@@ -29,7 +30,7 @@ public class OrbitalCycler : MonoBehaviour {
         //new HydrogenCalc(3,2,-1),
         //new HydrogenCalc(3,2,-2),
 
-        //new HydrogenCalc(4,1,1), //TODO these ones don't render correctly because the texture is not hi-fid enough.
+        //new HydrogenCalc(4,1,1), //HACK these ones don't render correctly because the texture is not hi-fid enough.
         //new HydrogenCalc(4,1,0), //so just don't include them and hope nobody notices.
         //new HydrogenCalc(4,1,-1),
 
@@ -47,8 +48,7 @@ public class OrbitalCycler : MonoBehaviour {
         //new HydrogenCalc(4,3,-2),
         //new HydrogenCalc(4,3,-3)
       };
-
-	// Use this for initialization
+  // Use this for initialization
 	void Start () {
     vrc = GetComponent<VolumeRenderComponent>();
     cardboardMain = GetComponentInChildren<Cardboard>();
@@ -79,4 +79,5 @@ public class OrbitalCycler : MonoBehaviour {
         mText.text = current.MLabel;
       }      
   }
+
 }

@@ -23,7 +23,7 @@ public class LevelSetMeshGenerator : MonoBehaviour
 {
   ILevelFunc func;
   float level = 0.5f;
-  const int SAMPLES = 60;
+  const int SAMPLES = 124;
 
   public float min = -1;
   public float max = 1;
@@ -236,7 +236,7 @@ public class LevelSetMeshGenerator : MonoBehaviour
   void Start()
   {
     mf = GetComponent<MeshFilter>();
-    var calc = new HydrogenCalc(2, 0, 0);
+    var calc = new HydrogenCalc(4, 2, 2);
     level = calc.GetLevelSetValue(0.5f);
     func = calc;
     mf.mesh = Gen();
