@@ -1,0 +1,5 @@
+Issac 3D is an experimental app to explore how virtual reality with Google Cardboard can be used to teach physics in the classroom. The app focuses on the orbitals of hydrogen. A 'virtual exhibition' can be viewed to learn about what orbitals are and what they look like. Two more advanced demos are also present; visualising gyroids and the propagation of an electromagnetic wave through a birefringent material. The app is currently in an alpha build and we are very enthusiastic to hear feedback and suggestions for future directions to take the project. The idea is to eventually have an app with many demos to complement the problems given on isaacphysics.org.
+
+Isaac (isaacphysics.org) is a site designed to offer support and activities in physics problem solving to teachers and students transitioning from GCSE (Y11), through to Sixth Form (Y12 & 13), through to university, by combining an online study tool with face-to-face events at partner schools and institutions across the UK. Isaac was created by the Rutherford Physics Partnership.
+
+This app was developed by Edward Ayers.

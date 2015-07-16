@@ -45,8 +45,26 @@ public class MenuBehaviour : MonoBehaviour
       {
         if (cardboard.CardboardTriggered)
         {
-          GetComponentInChildren<Text>().text = "LOADING...";
-          Application.LoadLevel(levelNo);
+          if (levelNo == -1)
+          {
+            //send email
+            string email = "cardboard@isaacphysics.org";
+            string subject = WWW.EscapeURL("Feedback for Isaac 3D");
+ 
+            Application.OpenURL("mailto:" + email + "?subject=" + subject);
+ 
+          }
+          else if (levelNo == -2)
+          {
+            //go to website
+            Debug.Log("opening website");
+            Application.OpenURL("http://www.isaacphysics.org");
+          }
+          else
+          {
+            GetComponentInChildren<Text>().text = "LOADING...";
+            Application.LoadLevel(levelNo);
+          }
         }
         else
         {
