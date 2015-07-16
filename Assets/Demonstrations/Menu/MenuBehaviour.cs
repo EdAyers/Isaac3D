@@ -49,7 +49,7 @@ public class MenuBehaviour : MonoBehaviour
           {
             //send email
             string email = "cardboard@isaacphysics.org";
-            string subject = WWW.EscapeURL("Feedback for Isaac 3D");
+            string subject = WWW.EscapeURL("Feedback for Isaac 3D").Replace("+", "%20");
  
             Application.OpenURL("mailto:" + email + "?subject=" + subject);
  
