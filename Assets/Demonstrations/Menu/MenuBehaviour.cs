@@ -57,7 +57,7 @@ public class MenuBehaviour : MonoBehaviour
           else if (levelNo == -2)
           {
             //go to website
-            Debug.Log("opening website");
+            //Debug.Log("opening website");
             Application.OpenURL("http://www.isaacphysics.org");
           }
           else

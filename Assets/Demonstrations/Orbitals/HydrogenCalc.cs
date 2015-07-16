@@ -268,7 +268,7 @@ namespace Assets
       float testValue = 1;
 
       float maxTotal = Integrate(STEPS, startV, delta, 0);
-      Debug.Log("maxtotal = " + maxTotal.ToString());
+      //Debug.Log("maxtotal = " + maxTotal.ToString());
 
       StringBuilder sb = new StringBuilder();
       for (int n = 0; n < STEPS; n++)
@@ -278,7 +278,7 @@ namespace Assets
         sb.Append(val);
         sb.Append(" ; ");
       }
-      Debug.Log(sb);
+      //Debug.Log(sb);
 
       for (int n = 0; n < 20; n++)
       {
@@ -296,8 +296,8 @@ namespace Assets
         {
           testValue += Mathf.Pow(2, -1 - n);
         }
-        Debug.Log("test value = " + testValue.ToString());
-        Debug.Log("total = " + total.ToString());
+        //Debug.Log("test value = " + testValue.ToString());
+        //Debug.Log("total = " + total.ToString());
       }
       
       return testValue;
@@ -331,7 +331,7 @@ namespace Assets
         sb.Append(l);
         sb.Append(Math.Abs(m));
         //sb.Append(".asset");
-        Debug.Log(sb.ToString());
+        //Debug.Log(sb.ToString());
         mesh = Resources.Load<Mesh>(sb.ToString());
         if (mesh == null) Debug.LogError("FAILED TO LOAD MESH FROM ASSETS, BLAST.");
       }

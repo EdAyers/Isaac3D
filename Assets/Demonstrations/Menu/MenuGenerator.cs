@@ -74,7 +74,7 @@ public class MenuGenerator : MonoBehaviour
     var r = verts[0].magnitude;// *0.75f / 0.95f;
     var e1 = r * Vector3.Normalize(verts[0] + verts[1] + verts[4]);
     var e2 = r * Vector3.Normalize(verts[0] + verts[1] + verts[2]);
-    Debug.LogFormat("({0},{1},{2})", e1.x, e1.y, e1.z);
+    //Debug.LogFormat("({0},{1},{2})", e1.x, e1.y, e1.z);
     var x = e1.x;
     var y = e1.y;
     EvenPermutations(new Vector3(x, y), 0, edgeCenters);

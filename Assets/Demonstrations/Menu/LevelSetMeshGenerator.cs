@@ -227,7 +227,7 @@ public class LevelSetMeshGenerator : MonoBehaviour
     mesh.triangles = tris;
     //mesh.RecalculateNormals();
     mesh.Optimize();
-    Debug.Log(vertices.Length);
+    //Debug.Log(vertices.Length);
     return mesh;
   }
 
