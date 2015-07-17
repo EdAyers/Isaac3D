@@ -13,8 +13,12 @@ The app intends to explore ways in which VR could be used for teaching students 
 5. To build, go to File > Build Settings and select your target platform. At the moment we have only tested on android so use that one.
 6. Hit build, select a build location and when prompted for the location of the android SDK navigate to the place you downloaded the files in step 2 to. This should produce an APK file. Use 'Build and Run' to run on a physical device.
 
-email problems, feedback and complements to cardboard (at) isaacphysics.org
+email problems, queries and feedback to cardboard (at) isaacphysics.org
 
+# Project structure
 
+- `AssetMakers` contains some data/algorithms that are not part of the build but are used to make some of the assets used by the app.
 
+- `Assets` contains the scenes, prefabs, scripts, textures etc used by the app. I'm in the process of reorganising this on the `Reorganise` branch. The WIP idea is that each demo in the app has its own folder in the `Demonstrations` subfolder and that commonly used assets will be in a different folder as well as a template blank demo. The `Cardboard` folder contains a slightly modified version of what Google gives you in the cardboard SDK.
 
+- `ProjectSettings` contains Unity wizardry.
