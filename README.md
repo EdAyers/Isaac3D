@@ -1,6 +1,8 @@
 # What this app does
 A Google Cardboard app using Unity that visualises concepts in physics. Currently in alpha.
-Part of the [Isaac](isaacphysics.org) project
+Part of the [Isaac](isaacphysics.org) project.
+
+The app intends to explore ways in which VR could be used for teaching students concepts in physics from GCSE to pre-university level. At the moment the app focuses on visualising hydrogenic orbitals.
 
 # How to build
 
