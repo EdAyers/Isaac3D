@@ -22,3 +22,17 @@ email problems, queries and feedback to cardboard (at) isaacphysics.org
 - `Assets` contains the scenes, prefabs, scripts, textures etc used by the app. I'm in the process of reorganising this on the `Reorganise` branch. The WIP idea is that each demo in the app has its own folder in the `Demonstrations` subfolder and that commonly used assets will be in a different folder as well as a template blank demo. The `Cardboard` folder contains a slightly modified version of what Google gives you in the cardboard SDK.
 
 - `ProjectSettings` contains Unity wizardry.
+
+# Licence
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
